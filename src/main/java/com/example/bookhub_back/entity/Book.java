@@ -1,6 +1,7 @@
 package com.example.bookhub_back.entity;
 
 import com.example.bookhub_back.common.enums.BookStatus;
+import com.example.bookhub_back.entity.dateTime.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
