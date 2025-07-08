@@ -47,7 +47,7 @@ public class CustomerOrder {
     @Column(name = "customer_order_date_at")
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "customerOrderId")
+    @OneToMany(mappedBy = "customerOrderDetailId")
     private List<CustomerOrderDetail> customerOrderDetails = new ArrayList<>();
 
     @OneToOne(mappedBy = "orderId", cascade = CascadeType.ALL)

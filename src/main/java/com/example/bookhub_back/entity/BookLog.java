@@ -42,7 +42,7 @@ public class BookLog {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "policy_id")
-    private DiscountPolicy policyId;
+    private Policy policyId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_isbn")
