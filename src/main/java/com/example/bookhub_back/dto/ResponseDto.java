@@ -1,11 +1,9 @@
 package com.example.bookhub_back.dto;
 
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Getter
 @AllArgsConstructor
