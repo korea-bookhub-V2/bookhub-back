@@ -1,4 +1,4 @@
-package com.example.bookhub_back.entities;
+package com.example.bookhub_back.entity;
 
 import com.example.bookhub_back.common.enums.DisplayType;
 import jakarta.persistence.*;
