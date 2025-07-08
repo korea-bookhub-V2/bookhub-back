@@ -50,11 +50,11 @@ public interface ResponseCode {
     String INTERNAL_SERVER_ERROR = "ISE";
     String SERVICE_UNAVAILABLE = "SUA";
     String REQUEST_TIMEOUT = "RT";
-
+  
     String DATA_INTEGRITY_VIOLATION = "DIV";
     String CONSTRAINT_VIOLATION = "CV";
     String DUPLICATE_ENTRY = "DUP";
-
+  
     String NO_EXIST_ID = "NEI";
     String NO_EXIST_BRANCH = "NEB";
     String DUPLICATED_BRANCH = "DB";

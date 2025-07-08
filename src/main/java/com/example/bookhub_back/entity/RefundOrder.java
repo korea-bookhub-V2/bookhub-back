@@ -1,5 +1,6 @@
 package com.example.bookhub_back.entity;
 
+import com.example.bookhub_back.common.enums.RefundReason;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

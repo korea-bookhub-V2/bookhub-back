@@ -48,5 +48,5 @@ public class Category {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "discount_policy_id")
-    private Policy PolicyId;
+    private Policy policyId;
 }

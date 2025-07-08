@@ -1,6 +1,6 @@
 package com.example.bookhub_back.common.constants;
 
-public class RegexConstants {
+public interface RegexConstants {
     public static final String LOING_ID_REGEX = "^[A-Za-z][A-Za-z\\d]{3,12}$";
 
     public static final String PASSWORD_REGEX =
