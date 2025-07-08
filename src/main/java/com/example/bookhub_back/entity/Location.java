@@ -8,7 +8,7 @@ import lombok.*;
 @Table(name = "locations")
 @Getter
 @Setter
-@NoArgsConstructor(AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class Location {
