@@ -2,6 +2,7 @@ package com.example.bookhub_back.repository;
 
 import com.example.bookhub_back.common.enums.CategoryType;
 import com.example.bookhub_back.entity.Category;
+import com.example.bookhub_back.entity.Policy;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,8 +31,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     Optional<Category> findByCategoryName(String categoryName);
 
     @Query("""
-    SELECT c.discountPolicyId FROM Category c
+    SELECT c.policyId FROM Category c
     WHERE c.categoryId = :categoryId AND c.isActive = true
 """)
-    Optional<DiscountPolicy> findPolicyByCategoryId(@Param("categoryId") Long categoryId);
+    Optional<Policy> findPolicyByCategoryId(@Param("categoryId") Long categoryId);
 }
