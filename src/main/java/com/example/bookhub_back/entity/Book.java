@@ -60,5 +60,5 @@ public class Book extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "discount_policy_id")
-    private DiscountPolicy policyId;
+    private Policy policyId;
 }
