@@ -1,4 +1,4 @@
-package com.example.bookhub_back.service.impl;
+package com.example.bookhub_back.service.publisher;
 
 import com.example.bookhub_back.common.constants.ResponseCode;
 import com.example.bookhub_back.common.constants.ResponseMessage;
@@ -8,7 +8,6 @@ import com.example.bookhub_back.dto.publisher.request.PublisherRequestDto;
 import com.example.bookhub_back.dto.publisher.response.PublisherResponseDto;
 import com.example.bookhub_back.entity.Publisher;
 import com.example.bookhub_back.repository.PublisherRepository;
-import com.example.bookhub_back.service.PublisherService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

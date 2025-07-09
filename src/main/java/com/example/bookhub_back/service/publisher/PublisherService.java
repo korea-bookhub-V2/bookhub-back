@@ -1,15 +1,13 @@
-package com.example.bookhub_back.service;
+package com.example.bookhub_back.service.publisher;
 
 import com.example.bookhub_back.dto.PageResponseDto;
 import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.publisher.request.PublisherRequestDto;
 import com.example.bookhub_back.dto.publisher.response.PublisherResponseDto;
 import jakarta.validation.Valid;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public interface PublisherService {
 
     ResponseDto<PublisherResponseDto> createPublisher(@Valid PublisherRequestDto dto);

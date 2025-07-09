@@ -5,7 +5,7 @@ import com.example.bookhub_back.dto.PageResponseDto;
 import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.publisher.request.PublisherRequestDto;
 import com.example.bookhub_back.dto.publisher.response.PublisherResponseDto;
-import com.example.bookhub_back.service.PublisherService;
+import com.example.bookhub_back.service.publisher.PublisherService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
