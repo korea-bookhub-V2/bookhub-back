@@ -25,6 +25,9 @@ public class SignUpRequestDto {
     @NotBlank(message = "비밀번호 확인은 필수입니다.")
     private String confirmPassword;
 
+    @NotBlank(message = "이름은 필수입니다.")
+    private String name;
+
     @NotBlank(message = "이메일은 필수입니다.")
     @Pattern(regexp = RegexConstants.EMAIL_REGEX, message = "이메일 형식이 아닙니다.")
     private String email;
