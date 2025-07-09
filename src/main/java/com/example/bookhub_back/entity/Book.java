@@ -5,7 +5,7 @@ import com.example.bookhub_back.entity.dateTime.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "books")
@@ -38,7 +38,7 @@ public class Book extends BaseTimeEntity {
     private Long bookPrice;
 
     @Column(name = "published_date", nullable = false)
-    private LocalDate publishedDate;
+    private LocalDateTime publishedDate;
 
     @Column(name = "cover_url")
     private String coverUrl;

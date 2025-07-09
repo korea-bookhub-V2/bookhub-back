@@ -30,7 +30,7 @@ public class BookLog {
     private Long previousPrice;
 
     @Column(name = "previous_discount_rate")
-    private Integer previousDiscountRate;
+    private Long previousDiscountRate;
 
     @Column(name = "changed_at")
     @CreatedDate

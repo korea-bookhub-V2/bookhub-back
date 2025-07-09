@@ -14,8 +14,8 @@ public class BookLogResponseDto {
     private String bookIsbn;
     private String bookTitle;
     private String bookLogType;
-    private int previousPrice;
-    private int previousDiscountRate;
+    private Long previousPrice;
+    private Long previousDiscountRate;
     private String employeeName;
     private Long policyId;
     private LocalDateTime changedAt;
