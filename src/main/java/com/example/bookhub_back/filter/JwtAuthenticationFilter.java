@@ -1,4 +1,4 @@
-package com.example.bookhub_back.dto.filter;
+package com.example.bookhub_back.filter;
 
 import com.example.bookhub_back.provider.JwtTokenProvider;
 import com.example.bookhub_back.security.auth.CustomEmployeeDetailsService;
@@ -26,7 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = (authorizationHeader != null && authorizationHeader.startsWith("Bearer "))
                 ? jwtTokenProvider.removeBearer(authorizationHeader) : null;
 
-            if (token == null || !jwtTokenProvider.validateToken(token)) {
+            if (token != null && jwtTokenProvider.validateToken(token)) {
                 String userId = jwtTokenProvider.getLoginId(token);
                 EmployeePrincipal employeeDetails = customEmployeeDetailsService.loadUserByUsername(userId);
 

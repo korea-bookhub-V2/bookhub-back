@@ -24,7 +24,7 @@ public class ResponseDto<T> {
         return new ResponseDto<>(code, message, null);
     }
 
-    public static ResponseEntity<ResponseDto<?>> failwithStatus(String code, String message, HttpStatus status){
+    public static ResponseEntity<ResponseDto<?>> failWithStatus(String code, String message, HttpStatus status){
         ResponseDto<?> response =  new ResponseDto<>(code, message, null);
         return ResponseEntity.status(status).body(response);
     }

@@ -1,5 +1,6 @@
 package com.example.bookhub_back.security.auth;
 
+import com.example.bookhub_back.common.enums.IsApproved;
 import com.example.bookhub_back.entity.Employee;
 import lombok.Getter;
 import net.minidev.json.annotate.JsonIgnore;
@@ -14,6 +15,7 @@ public class EmployeePrincipal implements UserDetails {
     private final Long employeeId;
     private final String loginId;
     private final String name;
+    private final IsApproved isApproved;
 
     @JsonIgnore
     private final String password;
@@ -24,7 +26,8 @@ public class EmployeePrincipal implements UserDetails {
         this.loginId = employee.getLoginId();
         this.name = employee.getName();
         this.password = employee.getPassword();
-        this.authorities = Collections.singleton(() -> employee.getAuthorityId().getAuthorityName());
+        this.authorities = Collections.singleton(() -> "ROLE_" + employee.getAuthorityId().getAuthorityName());
+        this.isApproved = employee.getIsApproved();
     }
 
     @Override
@@ -49,6 +52,6 @@ public class EmployeePrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isApproved.equals(IsApproved.APPROVED);
     }
 }
