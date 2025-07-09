@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ReceptionCreateResponseDto {
-    private Long branchId;
-    private Long purchaseOrderApprovalId;
+    private Long receptionId;
+    private String branchName;
+    private String bookIsbn;
+    private String bookTitle;
+    private int purchaseOrderAmount;
 }
