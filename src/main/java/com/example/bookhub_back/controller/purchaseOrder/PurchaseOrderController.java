@@ -7,7 +7,7 @@ import com.example.bookhub_back.dto.purchaseOrder.request.PurchaseOrderApproveRe
 import com.example.bookhub_back.dto.purchaseOrder.request.PurchaseOrderCreateRequestDto;
 import com.example.bookhub_back.dto.purchaseOrder.request.PurchaseOrderRequestDto;
 import com.example.bookhub_back.dto.purchaseOrder.response.PurchaseOrderResponseDto;
-import com.example.bookhub_back.service.PurchaseOrderService;
+import com.example.bookhub_back.service.purchaseOrder.PurchaseOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

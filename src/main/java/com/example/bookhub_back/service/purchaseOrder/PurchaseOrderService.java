@@ -1,4 +1,4 @@
-package com.example.bookhub_back.service;
+package com.example.bookhub_back.service.purchaseOrder;
 
 import com.example.bookhub_back.common.enums.PurchaseOrderStatus;
 import com.example.bookhub_back.dto.ResponseDto;

@@ -9,7 +9,6 @@ import com.example.bookhub_back.dto.statistics.response.revenue.WeekdayRevenueRe
 import com.example.bookhub_back.dto.statistics.response.revenue.WeeklyRevenueResponseDto;
 import com.example.bookhub_back.mapper.RevenueStatisticsMapper;
 import com.example.bookhub_back.repository.statistics.RevenueStatisticsRepository;
-import com.example.bookhub_back.service.PurchaseOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
