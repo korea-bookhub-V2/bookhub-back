@@ -15,6 +15,9 @@ public class EmployeePrincipal implements UserDetails {
     private final Long employeeId;
     private final String loginId;
     private final String name;
+    private final Long employeeNumber;
+    private final String branchName;
+    private final String positionName;
     private final IsApproved isApproved;
 
     @JsonIgnore
@@ -25,6 +28,9 @@ public class EmployeePrincipal implements UserDetails {
         this.employeeId = employee.getEmployeeId();
         this.loginId = employee.getLoginId();
         this.name = employee.getName();
+        this.employeeNumber = employee.getEmployeeNumber();
+        this.branchName = employee.getBranchId().getBranchName();
+        this.positionName = employee.getPositionId().getPositionName();
         this.password = employee.getPassword();
         this.authorities = Collections.singleton(() -> "ROLE_" + employee.getAuthorityId().getAuthorityName());
         this.isApproved = employee.getIsApproved();

@@ -9,5 +9,5 @@ import java.util.List;
 
 @Mapper
 public interface PurchaseOrderMapper {
-    List<PurchaseOrderResponseDto> searchPurchaseOrder(@Param("employeeName") String employeeName, @Param("bookIsbn") String bookIsbn, @Param("purchaseOrderStatus") PurchaseOrderStatus purchaseOrderStatus);
+//    List<PurchaseOrderResponseDto> searchPurchaseOrder(@Param("employeeName") String employeeName, @Param("bookIsbn") String bookIsbn, @Param("purchaseOrderStatus") PurchaseOrderStatus purchaseOrderStatus);
 }

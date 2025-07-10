@@ -1,11 +1,11 @@
-package com.example.bookhub_back.controller;
+package com.example.bookhub_back.controller.auth;
 
 import com.example.bookhub_back.common.constants.ApiMappingPattern;
 import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.auth.request.SignInRequestDto;
 import com.example.bookhub_back.dto.auth.request.SignUpRequestDto;
 import com.example.bookhub_back.dto.auth.response.SignInResponseDto;
-import com.example.bookhub_back.service.AuthService;
+import com.example.bookhub_back.service.auth.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +34,18 @@ public class AuthController {
     @GetMapping("/login-id-exists")
     public ResponseEntity<ResponseDto<Void>> checkLoginIdDuplicate(@RequestParam String loginId) {
         ResponseDto<Void> responseDto = authService.checkLoginIdDuplicate(loginId);
+        return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
+    }
+
+    @GetMapping("/email-exists")
+    public ResponseEntity<ResponseDto<Void>> checkEmailDuplicate(@RequestParam String email) {
+        ResponseDto<Void> responseDto = authService.checkEmailDuplicate(email);
+        return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
+    }
+
+    @GetMapping("/phone-number-exists")
+    public ResponseEntity<ResponseDto<Void>> checkPhoneNumberDuplicate(@RequestParam String phoneNumber) {
+        ResponseDto<Void> responseDto = authService.checkPhoneNumberDuplicate(phoneNumber);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 

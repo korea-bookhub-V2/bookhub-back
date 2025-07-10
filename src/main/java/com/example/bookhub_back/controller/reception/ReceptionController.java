@@ -2,6 +2,7 @@ package com.example.bookhub_back.controller.reception;
 
 import com.example.bookhub_back.common.constants.ApiMappingPattern;
 import com.example.bookhub_back.dto.ResponseDto;
+import com.example.bookhub_back.dto.reception.request.ReceptionCreateRequestDto;
 import com.example.bookhub_back.dto.reception.response.ReceptionCreateResponseDto;
 import com.example.bookhub_back.dto.reception.response.ReceptionListResponseDto;
 import com.example.bookhub_back.service.reception.ReceptionService;
@@ -20,7 +21,7 @@ public class ReceptionController {
 
     @PostMapping(ApiMappingPattern.ADMIN_API + "/reception")
     public ResponseEntity<ResponseDto<ReceptionCreateResponseDto>> createReception(
-            @RequestBody ReceptionCreateResponseDto dto,
+            @RequestBody ReceptionCreateRequestDto dto,
             @RequestHeader("Authorization") String token
             ) {
         ResponseDto<ReceptionCreateResponseDto> reception = receptionService.createReception(dto, token);
