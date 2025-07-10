@@ -1,4 +1,4 @@
-package com.example.bookhub_back.entity;
+package com.example.bookhub_back.entity.customer;
 
 import jakarta.persistence.*;
 import lombok.*;

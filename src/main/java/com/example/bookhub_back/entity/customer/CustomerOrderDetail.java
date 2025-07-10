@@ -1,5 +1,5 @@
 //CustomerOrderDetail
-package com.example.bookhub_back.entity;
+package com.example.bookhub_back.entity.customer;
 
 import com.example.bookhub_back.entity.Book;
 import jakarta.persistence.*;
