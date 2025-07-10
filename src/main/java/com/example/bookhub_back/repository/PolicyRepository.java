@@ -16,8 +16,8 @@ public interface PolicyRepository extends JpaRepository<Policy,Long> {
             FROM Policy p
                         WHERE(:keyword IS NULL OR p.policyTitle LIKE CONCAT('%', :keyword, '%'))
                              AND(:policyType IS NULL OR p.policyType = :policyType)
-                             AND(:start IS NULL OR p.policyType >= :start)
-                             AND(:end IS NULL OR p.policyType <= :end)
+                             AND(:start IS NULL OR p.startDate >= :start)
+                             AND(:end IS NULL OR p.endDate <= :end)
             ORDER BY p.policyId DESC                                                
             """)
     Page<Policy> findFiltered(

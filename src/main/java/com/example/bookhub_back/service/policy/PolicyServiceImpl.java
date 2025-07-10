@@ -17,6 +17,7 @@ import com.example.bookhub_back.entity.Policy;
 import com.example.bookhub_back.repository.AlertRepository;
 import com.example.bookhub_back.repository.EmployeeRepository;
 import com.example.bookhub_back.repository.PolicyRepository;
+import com.example.bookhub_back.service.alert.AlertServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -34,7 +35,7 @@ public class PolicyServiceImpl implements PolicyService{
 
     private final PolicyRepository policyRepository;
     private final EmployeeRepository employeeRepository;
-    //private final AlertServiceImpl alertService;
+    private final AlertServiceImpl alertService;
 
     @Override
     public ResponseDto<Void> createPolicy(PolicyCreateRequestDto dto) {
@@ -58,15 +59,15 @@ public class PolicyServiceImpl implements PolicyService{
 
         Policy savedPolicy = policyRepository.save(newPolicy);
 
-//        for(Employee employee : employeeRepository.findAll()) {
-//            alertService.createAlert(AlertCreateRequestDto).builder()
-//                    .employeeId(employee.getEmployeeId())
-//                    .alertType(AlertType.NOTICE)
-//                    .alertTargetTable(AlertTargetTable.POLICIES)
-//                    .targetPk(savedPolicy.getPolicyId())
-//                    .message("새로운 할인정책이 생성되었습니다")
-//                    .build();
-//        }
+        for(Employee employee : employeeRepository.findAll()) {
+            alertService.createAlert(AlertCreateRequestDto.builder()
+                    .employeeId(employee.getEmployeeId())
+                    .alertType(AlertType.NOTICE.toString())
+                    .alertTargetTable(AlertTargetTable.POLICIES.toString())
+                    .targetPk(savedPolicy.getPolicyId())
+                    .message("새로운 할인정책이 생성되었습니다")
+                    .build());
+        }
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
     }
 
@@ -96,15 +97,15 @@ public class PolicyServiceImpl implements PolicyService{
 
         Policy updatePolicy = policyRepository.save(policy);
 
-//        for(Employee employee : employeeRepository.findAll()) {
-//            alertService.createAlert(AlertCreateRequestDto).builder()
-//                    .employeeId(employee.getEmployeeId())
-//                    .alertType(AlertType.NOTICE)
-//                    .alertTargetTable(AlertTargetTable.POLICIES)
-//                    .targetPk(updatePolicy.getPolicyId())
-//                    .message("할인정책이 수정되었습니다.")
-//                    .build();
-//        }
+        for(Employee employee : employeeRepository.findAll()) {
+             alertService.createAlert(AlertCreateRequestDto.builder()
+                    .employeeId(employee.getEmployeeId())
+                    .alertType(AlertType.NOTICE.toString())
+                    .alertTargetTable(AlertTargetTable.POLICIES.toString())
+                    .targetPk(updatePolicy.getPolicyId())
+                    .message("할인정책이 수정되었습니다.")
+                    .build());
+        }
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
     }
