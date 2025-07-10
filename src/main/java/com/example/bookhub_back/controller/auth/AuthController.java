@@ -2,22 +2,24 @@ package com.example.bookhub_back.controller.auth;
 
 import com.example.bookhub_back.common.constants.ApiMappingPattern;
 import com.example.bookhub_back.dto.ResponseDto;
-import com.example.bookhub_back.dto.auth.request.SignInRequestDto;
-import com.example.bookhub_back.dto.auth.request.SignUpRequestDto;
+import com.example.bookhub_back.dto.auth.request.*;
 import com.example.bookhub_back.dto.auth.response.SignInResponseDto;
 import com.example.bookhub_back.service.auth.AuthService;
+import com.example.bookhub_back.service.mail.MailService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping(ApiMappingPattern.AUTH_API)
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    private final MailService mailService;
 
     @PostMapping("/signup")
     public ResponseEntity<ResponseDto<Void>> signUp(@Valid @RequestBody SignUpRequestDto dto) {
@@ -54,4 +56,30 @@ public class AuthController {
         ResponseDto<Void> responseDto = authService.logout(response);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
+
+    @PostMapping("/login-id-find/email")
+    public Mono<ResponseEntity<ResponseDto<String>>> SendEmailFindId(@Valid @RequestBody LoginIdFindSendEmailRequestDto dto) {
+        return mailService.sendEmailFindId(dto);
+    }
+
+    @GetMapping("/login-id-find")
+    public Mono<ResponseEntity<ResponseDto<String>>> verifyEmailId(@RequestParam String token) {
+        return mailService.verifyEmailId(token);
+    }
+
+    @PostMapping("/password-change/email")
+    public Mono<ResponseEntity<ResponseDto<String>>> sendEmailResetPassword (@Valid @RequestBody PasswordFindSendEmailRequestDto dto) {
+        return mailService.sendEmailResetPassword(dto);
+    }
+
+    @GetMapping("/password-change")
+    public Mono<ResponseEntity<ResponseDto<String>>> verifyLoginIdPassword(@RequestParam String token) {
+        return mailService.verifyLoginIdPassword(token);
+    }
+
+    @PutMapping("/password-change")
+    public Mono<ResponseEntity<ResponseDto<String>>> passwordChange(@RequestParam String token, @Valid @RequestBody PasswordResetRequestDto dto) {
+        return mailService.passwordChange(token, dto);
+    }
+
 }
