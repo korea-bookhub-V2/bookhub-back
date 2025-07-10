@@ -1,6 +1,8 @@
 package com.example.bookhub_back.service;
 
+import com.example.bookhub_back.common.enums.PurchaseOrderStatus;
 import com.example.bookhub_back.dto.ResponseDto;
+import com.example.bookhub_back.dto.purchaseOrder.request.PurchaseOrderApproveRequestDto;
 import com.example.bookhub_back.dto.purchaseOrder.request.PurchaseOrderCreateRequestDto;
 import com.example.bookhub_back.dto.purchaseOrder.request.PurchaseOrderRequestDto;
 import com.example.bookhub_back.dto.purchaseOrder.response.PurchaseOrderResponseDto;
