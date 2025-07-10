@@ -1,7 +1,9 @@
 //CustomerOrder
-package com.example.bookhub_back.entity;
+package com.example.bookhub_back.entity.customer;
 
+import com.example.bookhub_back.entity.Branch;
 import com.example.bookhub_back.entity.Policy;
+import com.example.bookhub_back.entity.RefundOrder;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
