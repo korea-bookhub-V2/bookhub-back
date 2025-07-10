@@ -11,10 +11,7 @@ import com.example.bookhub_back.dto.purchaseOrder.request.PurchaseOrderRequestDt
 import com.example.bookhub_back.dto.purchaseOrder.response.PurchaseOrderResponseDto;
 import com.example.bookhub_back.entity.*;
 import com.example.bookhub_back.mapper.PurchaseOrderMapper;
-import com.example.bookhub_back.repository.AuthorityRepository;
-import com.example.bookhub_back.repository.BookRepository;
-import com.example.bookhub_back.repository.EmployeeRepository;
-import com.example.bookhub_back.repository.PurchaseOrderRepository;
+import com.example.bookhub_back.repository.*;
 import com.example.bookhub_back.service.PurchaseOrderService;
 import com.example.bookhub_back.service.alert.AlertService;
 import jakarta.persistence.EntityNotFoundException;
@@ -35,7 +32,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private final EmployeeRepository employeeRepository;
     private final BookRepository bookRepository;
     private final AlertService alertService;
-    private final BookReceptionApprovalRepository bookReceptionApprovalRepository;
+    private final ReceptionRepository bookReceptionApprovalRepository;
     private final AuthorityRepository authorityRepository;
     private final PurchaseOrderMapper purchaseOrderMapper;
 
@@ -197,7 +194,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         PurchaseOrderApproval savedApproval = purchaseOrderApprovalRepository.save(pOA);
 
         if(purchaseOrder.getPurchaseOrderStatus() == PurchaseOrderStatus.APPROVED) {
-            BookReceptionApproval reception = BookReceptionApproval.builder()
+            Reception reception = Reception.builder()
                     .bookIsbn(approvedPurchaseOrder.getBookIsbn().getIsbn())
                     .receptionEmployeeId(null)
                     .branchName(approvedPurchaseOrder.getBranchId().getBranchName())
