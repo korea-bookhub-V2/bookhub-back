@@ -4,13 +4,18 @@ import com.example.bookhub_back.common.constants.ResponseCode;
 import com.example.bookhub_back.common.constants.ResponseMessage;
 import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.alert.request.AlertCreateRequestDto;
+import com.example.bookhub_back.dto.reception.request.ReceptionCreateRequestDto;
 import com.example.bookhub_back.dto.reception.response.ReceptionCreateResponseDto;
 import com.example.bookhub_back.dto.reception.response.ReceptionListResponseDto;
+import com.example.bookhub_back.dto.stock.request.StockUpdateRequestDto;
 import com.example.bookhub_back.entity.*;
 import com.example.bookhub_back.provider.JwtTokenProvider;
+import com.example.bookhub_back.repository.AuthorityRepository;
 import com.example.bookhub_back.repository.EmployeeRepository;
+import com.example.bookhub_back.repository.PurchaseOrderApprovalRepository;
 import com.example.bookhub_back.repository.ReceptionRepository;
 import com.example.bookhub_back.service.alert.AlertService;
+import com.example.bookhub_back.service.stock.StockService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,7 +36,7 @@ public class ReceptionServiceImpl implements ReceptionService {
 
     @Override
     @Transactional
-    public ResponseDto<ReceptionCreateResponseDto> createReception(ReceptionCreateResponseDto dto, String token) {
+    public ResponseDto<ReceptionCreateResponseDto> createReception(ReceptionCreateRequestDto dto, String token) {
         String loginId = jwtTokenProvider.getLoginId(jwtTokenProvider.removeBearer(token));
         Employee employee = employeeRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));

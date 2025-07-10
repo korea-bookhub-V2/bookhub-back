@@ -35,7 +35,7 @@ public class BookServiceImpl implements BookService {
     private UploadFileRepository uploadFileRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Value("${jwt.header}")
+    @Value("${file.upload-dir}")
     private String uploadDir;
 
     @Override

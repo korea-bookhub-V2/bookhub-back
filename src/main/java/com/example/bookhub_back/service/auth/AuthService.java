@@ -1,4 +1,4 @@
-package com.example.bookhub_back.service;
+package com.example.bookhub_back.service.auth;
 
 import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.auth.request.SignInRequestDto;
@@ -13,6 +13,10 @@ public interface AuthService {
     ResponseDto<SignInResponseDto> login(@Valid SignInRequestDto dto);
 
     ResponseDto<Void> checkLoginIdDuplicate(String loginId);
+
+    ResponseDto<Void> checkEmailDuplicate(String email);
+
+    ResponseDto<Void> checkPhoneNumberDuplicate(String phoneNumber);
 
     ResponseDto<Void> logout(HttpServletResponse response);
 }

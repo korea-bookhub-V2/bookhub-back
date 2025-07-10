@@ -8,5 +8,5 @@ public interface RegexConstants {
 
     public static final String EMAIL_REGEX = "^[A-Za-z][A-Za-z\\d]+@[A-Za-z\\d.-]+\\.[A-Za-z]{2,}$";
 
-    public static final String PHONE_REGEX = "^010\\d{8}";
+    public static final String PHONE_REGEX = "^010\\d{8}$";
 }

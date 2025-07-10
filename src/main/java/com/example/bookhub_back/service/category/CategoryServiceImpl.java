@@ -8,6 +8,7 @@ import com.example.bookhub_back.dto.category.response.CategoryCreateResponseDto;
 import com.example.bookhub_back.dto.category.response.CategoryTreeResponseDto;
 import com.example.bookhub_back.dto.category.response.CategoryUpdateResponseDto;
 import com.example.bookhub_back.repository.CategoryRepository;
+import com.example.bookhub_back.repository.PolicyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
