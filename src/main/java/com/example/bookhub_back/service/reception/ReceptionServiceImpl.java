@@ -2,6 +2,7 @@ package com.example.bookhub_back.service.reception;
 
 import com.example.bookhub_back.common.constants.ResponseCode;
 import com.example.bookhub_back.common.constants.ResponseMessage;
+import com.example.bookhub_back.dto.PageResponseDto;
 import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.alert.request.AlertCreateRequestDto;
 import com.example.bookhub_back.dto.reception.request.ReceptionCreateRequestDto;
@@ -18,8 +19,12 @@ import com.example.bookhub_back.service.alert.AlertService;
 import com.example.bookhub_back.service.stock.StockService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -102,10 +107,11 @@ public class ReceptionServiceImpl implements ReceptionService {
     }
 
     @Override
-    public ResponseDto<List<ReceptionListResponseDto>> getPendingList(String token) {
+    public ResponseDto<PageResponseDto<ReceptionListResponseDto>> getPendingList(String token, int page, int size) {
         String loginId = jwtTokenProvider.getLoginId(jwtTokenProvider.removeBearer(token));
-        List<Reception> pendingList = receptionRepository.findPendingByLoginId(loginId);
-        List<ReceptionListResponseDto> result = pendingList.stream()
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Reception> pendingList = receptionRepository.findPendingByLoginId(loginId, pageable);
+        List<ReceptionListResponseDto> result = pendingList.getContent().stream()
                 .map(r -> ReceptionListResponseDto.builder()
                         .bookReceptionApprovalId(r.getBookReceptionApprovalId())
                         .bookIsbn(r.getBookIsbn())
@@ -117,13 +123,28 @@ public class ReceptionServiceImpl implements ReceptionService {
                         .receptionEmployeeName(null)
                         .build())
                 .toList();
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, result);
+        PageResponseDto<ReceptionListResponseDto> pageResponse = PageResponseDto.of(
+                result,
+                pendingList.getTotalElements(),
+                pendingList.getTotalPages(),
+                pendingList.getNumber()
+        );
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, pageResponse);
     }
 
     @Override
-    public ResponseDto<List<ReceptionListResponseDto>> getManagerConfirmedList(String token) {
+    public ResponseDto<PageResponseDto<ReceptionListResponseDto>> getManagerConfirmedList(
+            String token, int page, int size, String startDate, String endDate) {
         String loginId = jwtTokenProvider.getLoginId(jwtTokenProvider.removeBearer(token));
-        List<Reception> confirmedList = receptionRepository.findAllConfirmedByLoginId(loginId);
+        Pageable pageable = PageRequest.of(page, size);
+        LocalDateTime start = null, end = null;
+        if (startDate != null && !startDate.isEmpty()) {
+            start = LocalDate.parse(startDate).atStartOfDay();
+        }
+        if (endDate != null && !endDate.isEmpty()) {
+            end = LocalDate.parse(endDate).atTime(23, 59, 59);
+        }
+        Page<Reception> confirmedList = receptionRepository.findAllConfirmedByLoginId(loginId, start, end, pageable);
         List<ReceptionListResponseDto> result = confirmedList.stream()
                 .map(r -> ReceptionListResponseDto.builder()
                         .bookReceptionApprovalId(r.getBookReceptionApprovalId())
@@ -136,14 +157,22 @@ public class ReceptionServiceImpl implements ReceptionService {
                         .receptionEmployeeName(r.getReceptionEmployeeId().getName())
                         .build())
                 .toList();
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, result);
+        PageResponseDto<ReceptionListResponseDto> pageResponse = PageResponseDto.of(
+                result,
+                confirmedList.getTotalElements(),
+                confirmedList.getTotalPages(),
+                confirmedList.getNumber()
+        );
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, pageResponse);
     }
 
     @Override
-    public ResponseDto<List<ReceptionListResponseDto>> getAdminConfirmedList(String branchName, String isbn) {
-        List<Reception> logs = receptionRepository.findAllConfirmedLogsWithFilter(
+    public ResponseDto<PageResponseDto<ReceptionListResponseDto>> getAdminConfirmedList(String branchName, String isbn, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Reception> logs = receptionRepository.findAllConfirmedLogsWithFilter(
                 branchName == null ? null : branchName.trim(),
-                isbn == null ? null : isbn.trim()
+                isbn == null ? null : isbn.trim(),
+                pageable
         );
         List<ReceptionListResponseDto> result = logs.stream()
                 .map(r -> ReceptionListResponseDto.builder()
@@ -157,6 +186,12 @@ public class ReceptionServiceImpl implements ReceptionService {
                         .receptionEmployeeName(r.getReceptionEmployeeId().getName())
                         .build())
                 .toList();
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, result);
+        PageResponseDto<ReceptionListResponseDto> pageResponse = PageResponseDto.of(
+                result,
+                logs.getTotalElements(),
+                logs.getTotalPages(),
+                logs.getNumber()
+        );
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, pageResponse);
     }
 }

@@ -1,10 +1,13 @@
 package com.example.bookhub_back.repository;
 
 import com.example.bookhub_back.entity.Reception;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ReceptionRepository extends JpaRepository <Reception, Long> {
@@ -14,7 +17,7 @@ public interface ReceptionRepository extends JpaRepository <Reception, Long> {
     WHERE e.loginId = :loginId
     AND r.isReceptionApproved = false        
     """)
-    List<Reception> findPendingByLoginId(@Param("loginId") String loginId);
+    Page<Reception> findPendingByLoginId(@Param("loginId") String loginId, Pageable pageable);
 
     @Query("""
     SELECT r FROM Reception r
@@ -23,8 +26,14 @@ public interface ReceptionRepository extends JpaRepository <Reception, Long> {
     JOIN Employee emp ON emp.branchId.branchName = r.branchName
     WHERE emp.loginId = :loginId
     AND r.isReceptionApproved = true
+    AND (:startDate IS NULL OR r.receptionDateAt >= :startDate)
+    AND (:endDate IS NULL OR r.receptionDateAt <= :endDate)
     """)
-    List<Reception> findAllConfirmedByLoginId(@Param("loginId") String loginId);
+    Page<Reception> findAllConfirmedByLoginId(
+            @Param("loginId") String loginId,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            Pageable pageable);
 
     @Query("""
     SELECT r FROM Reception r
@@ -34,7 +43,8 @@ public interface ReceptionRepository extends JpaRepository <Reception, Long> {
     AND (:branchName IS NULL OR r.branchName LIKE %:branchName%)
     AND (:bookIsbn IS NULL OR r.bookIsbn LIKE %:bookIsbn%)
     """)
-    List<Reception> findAllConfirmedLogsWithFilter(
+    Page<Reception> findAllConfirmedLogsWithFilter(
             @Param("branchName") String branchName,
-            @Param("bookIsbn") String bookIsbn);
+            @Param("bookIsbn") String bookIsbn,
+            Pageable pageable);
 }

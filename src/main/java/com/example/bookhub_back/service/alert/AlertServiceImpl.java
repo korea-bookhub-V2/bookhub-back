@@ -4,6 +4,7 @@ import com.example.bookhub_back.common.constants.ResponseCode;
 import com.example.bookhub_back.common.constants.ResponseMessage;
 import com.example.bookhub_back.common.enums.AlertTargetTable;
 import com.example.bookhub_back.common.enums.AlertType;
+import com.example.bookhub_back.dto.PageResponseDto;
 import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.alert.request.AlertCreateRequestDto;
 import com.example.bookhub_back.dto.alert.request.AlertReadRequestDto;
@@ -14,6 +15,9 @@ import com.example.bookhub_back.provider.JwtTokenProvider;
 import com.example.bookhub_back.repository.AlertRepository;
 import com.example.bookhub_back.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -82,15 +86,16 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Override
-    public ResponseDto<List<AlertResponseDto>> getUnreadAlerts(Long employeeId, String token) {
+    public ResponseDto<PageResponseDto<AlertResponseDto>> getUnreadAlerts(Long employeeId, String token, int page, int size) {
         String tokenUsername = jwtProvider.getLoginId(jwtProvider.removeBearer(token));
+        Pageable pageable = PageRequest.of(page, size);
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
         if (!employee.getLoginId().equals(tokenUsername)) {
             return ResponseDto.fail(ResponseCode.NO_PERMISSION, "본인의 알람만 조회할 수 있습니다.");
         }
-        List<Alert> alerts = alertRepository.findByEmployeeId_EmployeeIdAndIsReadFalseOrderByCreatedAtDesc(employeeId);
-        List<AlertResponseDto> result = alerts.stream()
+        Page<Alert> alertPage = alertRepository.findByEmployeeId_EmployeeIdAndIsReadFalseOrderByCreatedAtDesc(employeeId, pageable);
+        List<AlertResponseDto> result = alertPage.getContent().stream()
                 .map(alert -> AlertResponseDto.builder()
                         .alertId(alert.getAlertId())
                         .alertType(alert.getAlertType().name())
@@ -102,7 +107,14 @@ public class AlertServiceImpl implements AlertService {
                         .createdAt(alert.getCreatedAt())
                         .build())
                 .collect(Collectors.toList());
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, result);
+
+        PageResponseDto<AlertResponseDto> pageResponse = PageResponseDto.of(
+                result,
+                alertPage.getTotalElements(),
+                alertPage.getTotalPages(),
+                alertPage.getNumber()
+        );
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, pageResponse);
     }
 
     @Override
