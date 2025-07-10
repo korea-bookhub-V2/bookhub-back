@@ -3,13 +3,18 @@ package com.example.bookhub_back.service.branch;
 import com.example.bookhub_back.common.constants.ResponseCode;
 import com.example.bookhub_back.common.constants.ResponseMessageKorean;
 import com.example.bookhub_back.common.utils.DateUtils;
+import com.example.bookhub_back.dto.PageResponseDto;
 import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.branch.request.BranchCreateRequestDto;
 import com.example.bookhub_back.dto.branch.request.BranchUpdateRequestDto;
 import com.example.bookhub_back.dto.branch.response.BranchResponseDto;
 import com.example.bookhub_back.entity.Branch;
 import com.example.bookhub_back.repository.BranchRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,13 +66,14 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public ResponseDto<List<BranchResponseDto>> getAllBranchesByLocation(String branchLocation) {
-        List<BranchResponseDto> responseDtos = null;
-        List<Branch> branches = null;
+    public ResponseDto<PageResponseDto<BranchResponseDto>> getAllBranchesByLocation(int page, int size, String branchLocation) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Branch> branches = null;
+        List<BranchResponseDto> content = null;
 
-        branches = branchRepository.searchBranch(branchLocation);
+        branches = branchRepository.searchBranch(branchLocation, pageable);
 
-        responseDtos = branches.stream()
+        content = branches.getContent().stream()
             .map(branch -> BranchResponseDto.builder()
                 .branchId(branch.getBranchId())
                 .branchName(branch.getBranchName())
@@ -77,16 +83,54 @@ public class BranchServiceImpl implements BranchService {
                 .build())
             .collect(Collectors.toList());
 
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, responseDtos);
+        PageResponseDto<BranchResponseDto> pageResponseDto = PageResponseDto.of(
+            content,
+            branches.getTotalElements(),
+            branches.getTotalPages(),
+            branches.getNumber()
+        );
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, pageResponseDto);
     }
 
     @Override
     public ResponseDto<BranchResponseDto> getBranchById(Long branchId) {
-        return null;
+        BranchResponseDto responseDto = null;
+        Branch branch = null;
+
+        branch = branchRepository.findById(branchId)
+            .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 지점 아이디입니다."));
+
+        responseDto = BranchResponseDto.builder()
+            .branchId(branch.getBranchId())
+            .branchName(branch.getBranchName())
+            .branchLocation(branch.getBranchLocation())
+            .createdAt(DateUtils.format(branch.getCreatedAt()))
+            .updatedAt(DateUtils.format(branch.getUpdatedAt()))
+            .build();
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, responseDto);
     }
 
     @Override
+    @Transactional
     public ResponseDto<BranchResponseDto> updateBranch(Long branchId, BranchUpdateRequestDto dto) {
-        return null;
+        BranchResponseDto responseDto = null;
+        Branch branch = null;
+
+        branch = branchRepository.findById(branchId)
+            .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 지점 아이디입니다."));
+
+        branch.setBranchName(dto.getBranchName());
+        branch.setBranchLocation(dto.getBranchLocation());
+
+        Branch updateBranch = branchRepository.save(branch);
+
+        responseDto = BranchResponseDto.builder()
+            .branchName(updateBranch.getBranchName())
+            .branchLocation(updateBranch.getBranchLocation())
+            .build();
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, responseDto);
     }
 }

@@ -1,14 +1,14 @@
 package com.example.bookhub_back.controller.branch;
 
 import com.example.bookhub_back.common.constants.ApiMappingPattern;
-import com.example.bookhub_back.common.constants.ResponseCode;
-import com.example.bookhub_back.common.constants.ResponseMessageKorean;
+import com.example.bookhub_back.dto.PageResponseDto;
 import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.branch.request.BranchCreateRequestDto;
 import com.example.bookhub_back.dto.branch.request.BranchUpdateRequestDto;
 import com.example.bookhub_back.dto.branch.response.BranchResponseDto;
 import com.example.bookhub_back.service.branch.BranchService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,8 +38,11 @@ public class BranchController {
     }
 
     @GetMapping(ADMIN_BRANCH)
-    public ResponseEntity<ResponseDto<List<BranchResponseDto>>> geAllBranchesByLocation(@RequestParam(required = false) String branchLocation) {
-        ResponseDto<List<BranchResponseDto>> responseDto = branchService.getAllBranchesByLocation(branchLocation);
+    public ResponseEntity<ResponseDto<PageResponseDto<BranchResponseDto>>> getAllBranchesByLocation(
+        @RequestParam(defaultValue = "0") @Min(0) int page,
+        @RequestParam(defaultValue = "10") @Min(1) int size,
+        @RequestParam(required = false) String branchLocation) {
+        ResponseDto<PageResponseDto<BranchResponseDto>> responseDto = branchService.getAllBranchesByLocation(page, size, branchLocation);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 
