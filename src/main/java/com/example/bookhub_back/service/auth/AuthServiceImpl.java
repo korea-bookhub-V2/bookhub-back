@@ -14,6 +14,7 @@ import com.example.bookhub_back.entity.*;
 import com.example.bookhub_back.provider.JwtTokenProvider;
 import com.example.bookhub_back.repository.*;
 import com.example.bookhub_back.security.auth.EmployeePrincipal;
+import com.example.bookhub_back.service.alert.AlertService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
@@ -41,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthorityRepository authorityRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
-//    private final AlertService alertService;
+    private final AlertService alertService;
 
     @Override
     @Transactional
@@ -136,7 +137,7 @@ public class AuthServiceImpl implements AuthService {
                     .message(finalEmployee.getName() + "님의 회원가입 승인 요청이 도착했습니다.")
                     .build();
 
-//                alertService.createAlert(alertCreateRequestDto);
+                alertService.createAlert(alertCreateRequestDto);
             });
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS);
