@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.bookhub.bookhub_back.mapper.PurchaseOrderMapper">
+<mapper namespace="com.example.bookhub_back.mapper.PurchaseOrderMapper">
     <select id="searchPurchaseOrder" resultType="PurchaseOrderResponseDto">
         SELECT
         p.purchase_order_id,
