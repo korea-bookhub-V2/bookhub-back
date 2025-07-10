@@ -1,4 +1,4 @@
-package com.example.bookhub_back.service.impl;
+package com.example.bookhub_back.service.purchaseOrder;
 
 import com.example.bookhub_back.common.constants.ResponseCode;
 import com.example.bookhub_back.common.constants.ResponseMessage;
@@ -6,13 +6,13 @@ import com.example.bookhub_back.common.enums.AlertType;
 import com.example.bookhub_back.common.enums.PurchaseOrderStatus;
 import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.alert.request.AlertCreateRequestDto;
+import com.example.bookhub_back.dto.purchaseOrder.request.PurchaseOrderApproveRequestDto;
 import com.example.bookhub_back.dto.purchaseOrder.request.PurchaseOrderCreateRequestDto;
 import com.example.bookhub_back.dto.purchaseOrder.request.PurchaseOrderRequestDto;
 import com.example.bookhub_back.dto.purchaseOrder.response.PurchaseOrderResponseDto;
 import com.example.bookhub_back.entity.*;
 import com.example.bookhub_back.mapper.PurchaseOrderMapper;
 import com.example.bookhub_back.repository.*;
-import com.example.bookhub_back.service.PurchaseOrderService;
 import com.example.bookhub_back.service.alert.AlertService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -36,7 +36,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private final AuthorityRepository authorityRepository;
     private final PurchaseOrderMapper purchaseOrderMapper;
 
-    // 발주 요청서 작성
+
     @Override
     @Transactional
     public ResponseDto<List<PurchaseOrderResponseDto>> createPurchaseOrder(String loginId, PurchaseOrderCreateRequestDto dto) {
@@ -89,7 +89,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
 
-    // 발주 요청서 업데이트 (승인 상태 - 요청중 인 발주서만 전체 조회)
+
     @Override
     public ResponseDto<List<PurchaseOrderResponseDto>> getAllPurchaseOrdersRequested() {
         List<PurchaseOrderResponseDto> responseDtos = null;
@@ -105,7 +105,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
 
-    // 발주 요청서 조회 - 조회 기준: 발주담당사원, isbn, 승인 상태
+
     @Override
     public ResponseDto<List<PurchaseOrderResponseDto>> searchPurchaseOrder(
             String loginId, String employeeName, String bookIsbn, PurchaseOrderStatus purchaseOrderStatus
@@ -129,7 +129,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
 
-    // 5) 발주 요청서 수정 - 발주량
+
     @Override
     public ResponseDto<PurchaseOrderResponseDto> updatePurchaseOrder(PurchaseOrderRequestDto dto, Long purchaseOrderId) {
 
@@ -145,7 +145,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto);
     }
 
-    // 발주 요청서 수정 - 발주 승인 기능
+
     @Override
     @Transactional
     public ResponseDto<PurchaseOrderResponseDto> approvePurchaseOrder(String loginId, Long purchaseOrderId, PurchaseOrderApproveRequestDto dto) {
@@ -213,7 +213,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
 
-    // 발주 요청서 삭제
+
     @Override
     public ResponseDto<Void> deletePurchaseOrder(Long purchaseOrderId) {
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId)
@@ -224,7 +224,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
     }
 
-    // responseDto 변환 메서드
     public PurchaseOrderResponseDto changeToPurchaseOrderResponseDto(PurchaseOrder order) {
 
         PurchaseOrderResponseDto responseDto = PurchaseOrderResponseDto.builder()
