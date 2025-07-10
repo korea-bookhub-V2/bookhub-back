@@ -1,6 +1,7 @@
 package com.example.bookhub_back.controller.alert;
 
 import com.example.bookhub_back.common.constants.ApiMappingPattern;
+import com.example.bookhub_back.dto.PageResponseDto;
 import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.alert.request.AlertCreateRequestDto;
 import com.example.bookhub_back.dto.alert.request.AlertReadRequestDto;
@@ -35,11 +36,13 @@ public class AlertController {
     }
 
     @GetMapping("/unread/{employeeId}")
-    public ResponseEntity<ResponseDto<List<AlertResponseDto>>> getUnreadAlert(
+    public ResponseEntity<ResponseDto<PageResponseDto<AlertResponseDto>>> getUnreadAlert(
             @PathVariable Long employeeId,
-            @RequestHeader("Authorization") String token
+            @RequestHeader("Authorization") String token,
+            @RequestParam int page,
+            @RequestParam int size
     ) {
-        ResponseDto<List<AlertResponseDto>> responseDto = alertService.getUnreadAlerts(employeeId, token);
+        ResponseDto<PageResponseDto<AlertResponseDto>> responseDto = alertService.getUnreadAlerts(employeeId, token, page, size);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
