@@ -13,6 +13,7 @@ public class CategoryCreateRequestDto {
 
     @NotNull(message = "카테고리 레벨은 필수입니다.")
     @Min(value = 1, message = "카테고리 레벨은 최소 1 이상이어야 합니다.")
+    private Integer categoryLevel;
 
     @NotNull(message = "카테고리 타입은 필수입니다.")
     private CategoryType categoryType;

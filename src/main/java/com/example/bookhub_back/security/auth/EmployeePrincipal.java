@@ -16,6 +16,7 @@ public class EmployeePrincipal implements UserDetails {
     private final String loginId;
     private final String name;
     private final Long employeeNumber;
+    private final Long branchId;
     private final String branchName;
     private final String positionName;
     private final IsApproved isApproved;
@@ -29,6 +30,7 @@ public class EmployeePrincipal implements UserDetails {
         this.loginId = employee.getLoginId();
         this.name = employee.getName();
         this.employeeNumber = employee.getEmployeeNumber();
+        this.branchId = employee.getBranchId().getBranchId();
         this.branchName = employee.getBranchId().getBranchName();
         this.positionName = employee.getPositionId().getPositionName();
         this.password = employee.getPassword();

@@ -14,6 +14,7 @@ import com.example.bookhub_back.entity.Employee;
 import com.example.bookhub_back.provider.JwtTokenProvider;
 import com.example.bookhub_back.repository.AlertRepository;
 import com.example.bookhub_back.repository.EmployeeRepository;
+import com.example.bookhub_back.security.auth.EmployeePrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -62,13 +63,8 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Override
-    public ResponseDto<List<AlertResponseDto>> getAllAlerts(Long employeeId, String token) {
-        String tokenUsername = jwtProvider.getLoginId(jwtProvider.removeBearer(token));
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
-        if (!employee.getLoginId().equals(tokenUsername)) {
-            return ResponseDto.fail(ResponseCode.NO_PERMISSION, "본인의 알람만 조회할 수 있습니다.");
-        }
+    public ResponseDto<List<AlertResponseDto>> getAllAlerts(Long employeeId) {
+
         List<Alert> alerts = alertRepository.findByEmployeeId_EmployeeIdOrderByCreatedAtDesc(employeeId);
         List<AlertResponseDto> result = alerts.stream()
                 .map(alert -> AlertResponseDto.builder()
@@ -86,14 +82,9 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Override
-    public ResponseDto<PageResponseDto<AlertResponseDto>> getUnreadAlerts(Long employeeId, String token, int page, int size) {
-        String tokenUsername = jwtProvider.getLoginId(jwtProvider.removeBearer(token));
+    public ResponseDto<PageResponseDto<AlertResponseDto>> getUnreadAlerts(Long employeeId, int page, int size) {
+
         Pageable pageable = PageRequest.of(page, size);
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
-        if (!employee.getLoginId().equals(tokenUsername)) {
-            return ResponseDto.fail(ResponseCode.NO_PERMISSION, "본인의 알람만 조회할 수 있습니다.");
-        }
         Page<Alert> alertPage = alertRepository.findByEmployeeId_EmployeeIdAndIsReadFalseOrderByCreatedAtDesc(employeeId, pageable);
         List<AlertResponseDto> result = alertPage.getContent().stream()
                 .map(alert -> AlertResponseDto.builder()

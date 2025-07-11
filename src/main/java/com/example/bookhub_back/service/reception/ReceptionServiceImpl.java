@@ -11,10 +11,7 @@ import com.example.bookhub_back.dto.reception.response.ReceptionListResponseDto;
 import com.example.bookhub_back.dto.stock.request.StockUpdateRequestDto;
 import com.example.bookhub_back.entity.*;
 import com.example.bookhub_back.provider.JwtTokenProvider;
-import com.example.bookhub_back.repository.AuthorityRepository;
-import com.example.bookhub_back.repository.EmployeeRepository;
-import com.example.bookhub_back.repository.PurchaseOrderApprovalRepository;
-import com.example.bookhub_back.repository.ReceptionRepository;
+import com.example.bookhub_back.repository.*;
 import com.example.bookhub_back.service.alert.AlertService;
 import com.example.bookhub_back.service.stock.StockService;
 import jakarta.transaction.Transactional;
@@ -34,6 +31,7 @@ public class ReceptionServiceImpl implements ReceptionService {
     private final JwtTokenProvider jwtTokenProvider;
     private final EmployeeRepository employeeRepository;
     private final ReceptionRepository receptionRepository;
+    private final BranchRepository branchRepository;
     private final PurchaseOrderApprovalRepository purchaseOrderApprovalRepository;
     private final StockService stockService;
     private final AlertService alertService;
@@ -41,13 +39,14 @@ public class ReceptionServiceImpl implements ReceptionService {
 
     @Override
     @Transactional
-    public ResponseDto<ReceptionCreateResponseDto> createReception(ReceptionCreateRequestDto dto, String token) {
-        String loginId = jwtTokenProvider.getLoginId(jwtTokenProvider.removeBearer(token));
-        Employee employee = employeeRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
-        Branch branch = employee.getBranchId();
+    public ResponseDto<ReceptionCreateResponseDto> createReception(ReceptionCreateRequestDto dto, Long branchId) {
+
+        Branch branch = branchRepository.findById(branchId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지점입니다."));
+
         PurchaseOrderApproval purchaseOrderApproval = purchaseOrderApprovalRepository.findById(dto.getPurchaseOrderApprovalId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 발주 승인 입니다."));
+
         Reception reception = Reception.builder()
                 .bookIsbn(purchaseOrderApproval.getPurchaseOrderId().getBookIsbn().getIsbn())
                 .receptionEmployeeId(null)
@@ -58,7 +57,9 @@ public class ReceptionServiceImpl implements ReceptionService {
                 .receptionDateAt(null)
                 .purchaseOrderApprovalId(purchaseOrderApproval)
                 .build();
+
         Reception newReception = receptionRepository.save(reception);
+
         ReceptionCreateResponseDto responseDto = ReceptionCreateResponseDto.builder()
                 .receptionId(newReception.getBookReceptionApprovalId())
                 .branchName(newReception.getBranchName())
@@ -71,12 +72,14 @@ public class ReceptionServiceImpl implements ReceptionService {
 
     @Override
     @Transactional
-    public ResponseDto<Void> approveReception(Long id, String token) {
-        String loginId = jwtTokenProvider.getLoginId(jwtTokenProvider.removeBearer(token));
-        Employee employee = employeeRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
+    public ResponseDto<Void> approveReception(Long id, Long employeeId) {
+
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+
         Reception reception = receptionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 데이터입니다."));
+
         reception.setIsReceptionApproved(true);
         reception.setReceptionEmployeeId(employee);
         reception.setReceptionDateAt(LocalDateTime.now());
@@ -88,8 +91,10 @@ public class ReceptionServiceImpl implements ReceptionService {
                 .amount((long) reception.getPurchaseOrderAmount())
                 .description("입고-수령확인")
                 .build();
+
         Authority adminAuthority = authorityRepository.findByAuthorityName("ADMIN")
                 .orElseThrow(() -> new IllegalArgumentException(ResponseMessage.USER_NOT_FOUND));
+
         for (Employee admin : employeeRepository.findAll().stream()
                 .filter(emp -> emp.getAuthorityId().equals(adminAuthority))
                 .toList()) {
@@ -107,8 +112,8 @@ public class ReceptionServiceImpl implements ReceptionService {
     }
 
     @Override
-    public ResponseDto<PageResponseDto<ReceptionListResponseDto>> getPendingList(String token, int page, int size) {
-        String loginId = jwtTokenProvider.getLoginId(jwtTokenProvider.removeBearer(token));
+    public ResponseDto<PageResponseDto<ReceptionListResponseDto>> getPendingList(String loginId, int page, int size) {
+
         Pageable pageable = PageRequest.of(page, size);
         Page<Reception> pendingList = receptionRepository.findPendingByLoginId(loginId, pageable);
         List<ReceptionListResponseDto> result = pendingList.getContent().stream()
@@ -134,8 +139,8 @@ public class ReceptionServiceImpl implements ReceptionService {
 
     @Override
     public ResponseDto<PageResponseDto<ReceptionListResponseDto>> getManagerConfirmedList(
-            String token, int page, int size, String startDate, String endDate) {
-        String loginId = jwtTokenProvider.getLoginId(jwtTokenProvider.removeBearer(token));
+            String loginId, int page, int size, String startDate, String endDate) {
+
         Pageable pageable = PageRequest.of(page, size);
         LocalDateTime start = null, end = null;
         if (startDate != null && !startDate.isEmpty()) {

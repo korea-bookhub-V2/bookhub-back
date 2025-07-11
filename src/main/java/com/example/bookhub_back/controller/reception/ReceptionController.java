@@ -6,14 +6,16 @@ import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.reception.request.ReceptionCreateRequestDto;
 import com.example.bookhub_back.dto.reception.response.ReceptionCreateResponseDto;
 import com.example.bookhub_back.dto.reception.response.ReceptionListResponseDto;
+import com.example.bookhub_back.security.auth.EmployeePrincipal;
 import com.example.bookhub_back.service.reception.ReceptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(ApiMappingPattern.BASIC_API)
+@RequestMapping
 @RequiredArgsConstructor
 public class ReceptionController {
     private final ReceptionService receptionService;
@@ -21,39 +23,44 @@ public class ReceptionController {
     @PostMapping(ApiMappingPattern.ADMIN_API + "/reception")
     public ResponseEntity<ResponseDto<ReceptionCreateResponseDto>> createReception(
             @RequestBody ReceptionCreateRequestDto dto,
-            @RequestHeader("Authorization") String token
+            @AuthenticationPrincipal EmployeePrincipal employeePrincipal
     ) {
-        ResponseDto<ReceptionCreateResponseDto> reception = receptionService.createReception(dto, token);
+        Long branchId = employeePrincipal.getBranchId();
+        ResponseDto<ReceptionCreateResponseDto> reception = receptionService.createReception(dto, branchId);
         return ResponseEntity.status(HttpStatus.CREATED).body(reception);
     }
 
     @PutMapping(ApiMappingPattern.MANAGER_API + "/reception/approve/{id}")
     public ResponseEntity<ResponseDto<Void>> approveReception(
-            @PathVariable Long id, @RequestHeader("Authorization") String token
+            @PathVariable Long id,
+            @AuthenticationPrincipal EmployeePrincipal employeePrincipal
     ) {
-        ResponseDto<Void> responseDto = receptionService.approveReception(id, token);
+        Long employeeId = employeePrincipal.getEmployeeId();
+        ResponseDto<Void> responseDto = receptionService.approveReception(id, employeeId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     @GetMapping(ApiMappingPattern.MANAGER_API + "/reception/pending")
     public ResponseEntity<ResponseDto<PageResponseDto<ReceptionListResponseDto>>> getPendingReceptions(
-            @RequestHeader("Authorization") String token,
+            @AuthenticationPrincipal EmployeePrincipal employeePrincipal,
             @RequestParam int page,
             @RequestParam int size
     ) {
-        ResponseDto<PageResponseDto<ReceptionListResponseDto>> reception = receptionService.getPendingList(token, page, size);
+        String loginId = employeePrincipal.getLoginId();
+        ResponseDto<PageResponseDto<ReceptionListResponseDto>> reception = receptionService.getPendingList(loginId, page, size);
         return ResponseEntity.status(HttpStatus.OK).body(reception);
     }
 
     @GetMapping(ApiMappingPattern.MANAGER_API + "/reception/confirmed")
     public ResponseEntity<ResponseDto<PageResponseDto<ReceptionListResponseDto>>> getManagerConfirmedReceptions(
-            @RequestHeader("Authorization") String token,
+            @AuthenticationPrincipal EmployeePrincipal employeePrincipal,
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam String startDate,
             @RequestParam String endDate
     ) {
-        ResponseDto<PageResponseDto<ReceptionListResponseDto>> reception = receptionService.getManagerConfirmedList(token, page, size, startDate, endDate);
+        String loginId = employeePrincipal.getLoginId();
+        ResponseDto<PageResponseDto<ReceptionListResponseDto>> reception = receptionService.getManagerConfirmedList(loginId, page, size, startDate, endDate);
         return ResponseEntity.status(HttpStatus.OK).body(reception);
     }
 

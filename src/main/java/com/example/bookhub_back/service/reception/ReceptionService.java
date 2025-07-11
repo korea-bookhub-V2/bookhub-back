@@ -9,9 +9,9 @@ import com.example.bookhub_back.dto.reception.response.ReceptionListResponseDto;
 import java.util.List;
 
 public interface ReceptionService {
-    ResponseDto<ReceptionCreateResponseDto> createReception(ReceptionCreateRequestDto dto, String token);
-    ResponseDto<Void> approveReception(Long id, String token);
-    ResponseDto<PageResponseDto<ReceptionListResponseDto>> getPendingList(String token, int page, int size);
+    ResponseDto<ReceptionCreateResponseDto> createReception(ReceptionCreateRequestDto dto, Long branchId);
+    ResponseDto<Void> approveReception(Long id, Long employeeId);
+    ResponseDto<PageResponseDto<ReceptionListResponseDto>> getPendingList(String loginId, int page, int size);
     ResponseDto<PageResponseDto<ReceptionListResponseDto>> getManagerConfirmedList(String token, int page, int size, String startDate, String endDate);
     ResponseDto<PageResponseDto<ReceptionListResponseDto>> getAdminConfirmedList(String branchName, String token, int page, int size);
 }

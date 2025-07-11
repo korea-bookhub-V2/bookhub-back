@@ -3,6 +3,7 @@ package com.example.bookhub_back.service.book;
 import com.example.bookhub_back.common.constants.ResponseCode;
 import com.example.bookhub_back.common.constants.ResponseMessage;
 import com.example.bookhub_back.common.enums.BookLogType;
+import com.example.bookhub_back.dto.PageResponseDto;
 import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.book.response.BookLogResponseDto;
 import com.example.bookhub_back.entity.Book;
@@ -12,6 +13,9 @@ import com.example.bookhub_back.entity.Policy;
 import com.example.bookhub_back.repository.BookLogRepository;
 import com.example.bookhub_back.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,12 +29,19 @@ public class BookLogServiceImpl implements BookLogService {
     private final BookRepository bookrepository;
 
     @Override
-    public ResponseDto<List<BookLogResponseDto>> getBookLogs(String isbn) {
-        List<BookLog> logs = bookLogRepository.findByBookIsbn_Isbn(isbn);
-        List<BookLogResponseDto> result = logs.stream()
+    public ResponseDto<PageResponseDto<BookLogResponseDto>> getBookLogs(String isbn, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<BookLog> logs = bookLogRepository.findByBookIsbn_Isbn(isbn, pageable);
+        List<BookLogResponseDto> result = logs.getContent().stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, result);
+        PageResponseDto<BookLogResponseDto> pageDto = PageResponseDto.of(
+                result,
+                logs.getTotalElements(),
+                logs.getTotalPages(),
+                logs.getNumber()
+        );
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, pageDto);
     }
 
     @Override
