@@ -40,10 +40,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public ResponseDto<BookResponseDto> createBook(BookCreateRequestDto dto, String token, MultipartFile coverImageFile) throws Exception {
-        String loginId = jwtTokenProvider.getLoginId(token);
-        Employee employee = employeeRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_ID));
+    public ResponseDto<BookResponseDto> createBook(BookCreateRequestDto dto, Long employeeId, MultipartFile coverImageFile) throws Exception {
+
         Book book = Book.builder()
                 .isbn(dto.getIsbn())
                 .categoryId(categoryRepository.findById(dto.getCategoryId()).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 카테고리입니다.")))
@@ -67,14 +65,16 @@ public class BookServiceImpl implements BookService {
             String coverUrl = saveAndRecordCoverImage(coverImageFile, dto.getIsbn());
             savedBook.setCoverUrl(coverUrl);
         }
+        Employee employee = employeeRepository.findById(employeeId).
+                orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
         bookLogService.logCreate(savedBook, employee);
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, toDto(savedBook));
     }
 
     @Override
-    public ResponseDto<BookResponseDto> updateBook(String isbn, BookUpdateRequestDto dto, String token, MultipartFile coverImageFile) throws Exception {
-        String loginId = jwtTokenProvider.getLoginId(token);
-        Employee employee = employeeRepository.findByLoginId(loginId)
+    public ResponseDto<BookResponseDto> updateBook(String isbn, BookUpdateRequestDto dto, Long employeeId, MultipartFile coverImageFile) throws Exception {
+
+        Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
         Book book = bookRepository.findByIsbn(dto.getIsbn())
                 .orElseThrow(() -> new IllegalArgumentException("해당 ISBN의 책이 존재하지 않습니다."));
