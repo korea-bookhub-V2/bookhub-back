@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PolicyAdminController {
 
-    //서비스 단이랑 연결
+
     private final PolicyService policyService;
 
-    //1) 할인 정책 생성
+
     @PostMapping
     public ResponseEntity<ResponseDto<Void>> createPolicy(
             @Valid @RequestBody PolicyCreateRequestDto dto){
@@ -27,7 +27,7 @@ public class PolicyAdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(discountPolicy);
     }
 
-    //2) 할인 정책 수정
+
     @PutMapping("/{policyId}")
     public ResponseEntity<ResponseDto<Void>> updatePolicy(
             @PathVariable Long policyId,
@@ -36,7 +36,7 @@ public class PolicyAdminController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
-    //3) 할인 정책 삭제
+
     @DeleteMapping("/{policyId}")
     public ResponseEntity<ResponseDto<Void>> deletePolicy(@PathVariable Long policyId){
         ResponseDto<Void> responseDto = policyService.deletePolicy(policyId);
