@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +33,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    @Transactional
     public ResponseDto<List<Void>> createAuthor(AuthorCreateRequestDto dto) {
         List<AuthorRequestDto> requestDtos = dto.getAuthors();
         List<Author> authors = requestDtos.stream()
@@ -74,6 +76,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    @Transactional
     public ResponseDto<Void> updateAuthor(Long authorId, AuthorRequestDto dto) {
         Author author = authorRepository.findById(authorId)
             .orElseThrow(() -> new IllegalArgumentException("작가를 찾을 수 없습니다."));
@@ -87,6 +90,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    @Transactional
     public ResponseDto<Void> deleteAuthor(Long authorId) {
         Author author = authorRepository.findById(authorId)
             .orElseThrow(() -> new IllegalArgumentException("작가를 찾을 수 없습니다."));
