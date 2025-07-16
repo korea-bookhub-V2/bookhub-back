@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping(ApiMappingPattern.BASIC_API+ApiMappingPattern.ADMIN_API+"/stock-log")
+@RequestMapping(ApiMappingPattern.ADMIN_API+"/stock-log")
 @RequiredArgsConstructor
 public class StockLogController {
     private final StockLogService stockLogService;

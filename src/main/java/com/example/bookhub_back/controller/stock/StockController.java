@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(ApiMappingPattern.BASIC_API+ApiMappingPattern.COMMON_API+"/stocks")
+@RequestMapping(ApiMappingPattern.COMMON_API+"/stocks")
 @RequiredArgsConstructor
 public class StockController {
 
