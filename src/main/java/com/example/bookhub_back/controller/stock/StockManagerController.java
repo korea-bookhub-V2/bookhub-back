@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(ApiMappingPattern.BASIC_API+ApiMappingPattern.MANAGER_API+"/stocks")
+@RequestMapping(ApiMappingPattern.MANAGER_API+"/stocks")
 @RequiredArgsConstructor
 public class StockManagerController {
 
