@@ -47,6 +47,6 @@ public class Category {
     private Boolean isActive = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "discount_policy_id")
+    @JoinColumn(name = "policy_id")
     private Policy policyId;
 }
