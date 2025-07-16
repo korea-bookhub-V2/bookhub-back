@@ -9,10 +9,7 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(ApiMappingPattern.COMMON_API+"/stocks")
@@ -29,5 +26,13 @@ public class StockController {
             @RequestParam(required = false) String bookTitle){
         ResponseDto<PageResponseDto<StockResponseDto>> response = stockService.getFilteredStocks(page,size,branchId,bookTitle);
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/{stockId}")
+    public ResponseEntity<ResponseDto<StockResponseDto>> getStockById(
+
+            @PathVariable Long stockId){
+        ResponseDto<StockResponseDto> responseDto = stockService.getStockById(stockId);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 }

@@ -24,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -145,7 +146,22 @@ public class PolicyServiceImpl implements PolicyService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseDto<PolicyDetailResponseDto> getPolicyById(Long policyId) {
-        return null;
+        PolicyDetailResponseDto dto = null;
+        Policy policy = policyRepository.findById(policyId)
+                .orElseThrow(() -> new EntityNotFoundException(ResponseCode.NO_EXIST_ID + policyId));
+
+        dto = PolicyDetailResponseDto.builder()
+                .policyTitle(policy.getPolicyTitle())
+                .policyDescription(policy.getPolicyDescription())
+                .policyType(policy.getPolicyType())
+                .totalPriceAchieve(policy.getTotalPriceAchieve())
+                .discountPercent(policy.getDiscountPercent())
+                .startDate(policy.getStartDate())
+                .endDate(policy.getEndDate())
+                .build();
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, dto);
     }
 }

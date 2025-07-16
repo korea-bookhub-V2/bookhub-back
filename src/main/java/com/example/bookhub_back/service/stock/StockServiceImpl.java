@@ -151,4 +151,22 @@ public class StockServiceImpl implements StockService{
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, pageDto);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseDto<StockResponseDto> getStockById(Long stockId) {
+        StockResponseDto dto = null;
+        Stock stock = stockRepository.findById(stockId)
+                .orElseThrow(()-> new EntityNotFoundException(ResponseCode.NO_EXIST_ID + stockId));
+        dto = StockResponseDto.builder()
+                .stockId(stock.getStockId())
+                .bookIsbn(stock.getBookIsbn().getIsbn())
+                .branchId(stock.getBranchId().getBranchId())
+                .bookAmount(stock.getBookAmount())
+                .build();
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, dto);
+
+
+    }
 }
