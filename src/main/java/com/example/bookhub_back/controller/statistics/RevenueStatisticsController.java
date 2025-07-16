@@ -20,7 +20,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping(ApiMappingPattern.BASIC_API+ApiMappingPattern.ADMIN_API+"/statistics/revenue")
+@RequestMapping(ApiMappingPattern.ADMIN_API+"/statistics/revenue")
 @RequiredArgsConstructor
 public class RevenueStatisticsController {
     private final RevenueStatisticsService revenueService;

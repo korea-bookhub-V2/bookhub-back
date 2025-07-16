@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping(ApiMappingPattern.BASIC_API + ApiMappingPattern.COMMON_API + "/policies")
+@RequestMapping(ApiMappingPattern.COMMON_API + "/policies")
 @RequiredArgsConstructor
 public class PolicyController {
 

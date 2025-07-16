@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(ApiMappingPattern.BASIC_API+"/publishers")
+@RequestMapping(ApiMappingPattern.ADMIN_API+"/publishers")
 @RequiredArgsConstructor
 public class PublisherController {
     private final PublisherService publisherService;

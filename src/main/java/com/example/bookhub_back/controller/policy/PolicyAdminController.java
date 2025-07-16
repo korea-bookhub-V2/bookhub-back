@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(ApiMappingPattern.BASIC_API+ApiMappingPattern.ADMIN_API+"/policies")
+@RequestMapping(ApiMappingPattern.ADMIN_API+"/policies")
 @RequiredArgsConstructor
 public class PolicyAdminController {
 

@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(ApiMappingPattern.BASIC_API+ApiMappingPattern.COMMON_API+"/locations")
+@RequestMapping(ApiMappingPattern.COMMON_API+"/locations")
 @RequiredArgsConstructor
 public class LocationController {
     private final LocationService locationService;
