@@ -64,17 +64,13 @@ public class PurchaseOrderController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    /*
-    발주 승인 페이지 기능
-     */
 
-    // 발주 요청서 업데이트 ('승인 상태 - 요청중' 인 발주서만 전체 조회) -- 발주 승인 페이지 기능
     @GetMapping(ApiMappingPattern.ADMIN_API + "/purchase-orders/requested")
     public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> getAllPurchaseOrdersRequested() {
         ResponseDto<List<PurchaseOrderResponseDto>> response = purchaseOrderService.getAllPurchaseOrdersRequested();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-    // 발주 요청서 수정 - 발주 승인 기능 (승인 또는 승인 거절) -> purchaseOrderApproval 생성
+
     @PutMapping(ApiMappingPattern.ADMIN_API + "/purchase-orders/approval/{purchaseOrderId}")
     public ResponseEntity<ResponseDto<PurchaseOrderResponseDto>> approvePurchaseOrder(
             @AuthenticationPrincipal String loginId,

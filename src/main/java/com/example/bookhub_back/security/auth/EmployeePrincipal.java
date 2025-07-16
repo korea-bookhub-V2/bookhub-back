@@ -21,6 +21,7 @@ public class EmployeePrincipal implements UserDetails {
     private final String positionName;
     private final IsApproved isApproved;
 
+
     @JsonIgnore
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
@@ -36,6 +37,7 @@ public class EmployeePrincipal implements UserDetails {
         this.password = employee.getPassword();
         this.authorities = Collections.singleton(() -> "ROLE_" + employee.getAuthorityId().getAuthorityName());
         this.isApproved = employee.getIsApproved();
+
     }
 
     @Override
