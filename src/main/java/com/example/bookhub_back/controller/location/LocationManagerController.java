@@ -14,7 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(ApiMappingPattern.BASIC_API+ApiMappingPattern.MANAGER_API+"/locations")
+@RequestMapping(ApiMappingPattern.MANAGER_API+"/locations")
 @RequiredArgsConstructor
 public class LocationManagerController {
 
