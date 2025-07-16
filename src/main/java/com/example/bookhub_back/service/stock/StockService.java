@@ -11,4 +11,6 @@ public interface StockService {
     ResponseDto<Void> updateStock(Long stockId, @Valid StockUpdateRequestDto dto);
 
     ResponseDto<PageResponseDto<StockResponseDto>> getFilteredStocks(@Min(0) int page, @Min(1) int size, Long branchId, String bookTitle);
+
+    ResponseDto<StockResponseDto> getStockById(Long stockId);
 }
