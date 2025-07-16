@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping(ApiMappingPattern.MANAGER_API+"/purchase-orders")
 @RequiredArgsConstructor
 public class PurchaseOrderController {
     private final PurchaseOrderService purchaseOrderService;
 
     // 발주 요청서 작성
-    @PostMapping(ApiMappingPattern.MANAGER_API + "/purchase-orders")
+    @PostMapping
     public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> createPurchaseOrder(
             @AuthenticationPrincipal String loginId,
             @Valid @RequestBody PurchaseOrderCreateRequestDto dto
@@ -34,7 +34,7 @@ public class PurchaseOrderController {
     }
 
     // 4) 발주 요청서 조회 - 조회 조건 없을 시 전체 조회 기능, 사용자 소속 지점 해당 발주서만 필터링
-    @GetMapping(ApiMappingPattern.MANAGER_API + "/purchase-orders")
+    @GetMapping
     public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> searchPurchaseOrder(
             @AuthenticationPrincipal String loginId,
             @RequestParam(required = false) String employeeName,
@@ -46,7 +46,7 @@ public class PurchaseOrderController {
     }
 
     // 5) 발주 요청서 수정 - 발주량 수정
-    @PutMapping(ApiMappingPattern.MANAGER_API + "/purchase-orders/{purchaseOrderId}")
+    @PutMapping("/{purchaseOrderId}")
     public ResponseEntity<ResponseDto<PurchaseOrderResponseDto>> updatePurchaseOrder(
             @RequestBody PurchaseOrderRequestDto dto,
             @PathVariable Long purchaseOrderId
@@ -56,7 +56,7 @@ public class PurchaseOrderController {
     }
 
     // 7) 발주 요청서 삭제
-    @DeleteMapping(ApiMappingPattern.MANAGER_API + "/purchase-orders/{purchaseOrderId}")
+    @DeleteMapping("/{purchaseOrderId}")
     public ResponseEntity<ResponseDto<Void>> deletePurchaseOrder(
             @PathVariable Long purchaseOrderId
     ) {
@@ -65,20 +65,5 @@ public class PurchaseOrderController {
     }
 
 
-    @GetMapping(ApiMappingPattern.ADMIN_API + "/purchase-orders/requested")
-    public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> getAllPurchaseOrdersRequested() {
-        ResponseDto<List<PurchaseOrderResponseDto>> response = purchaseOrderService.getAllPurchaseOrdersRequested();
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    @PutMapping(ApiMappingPattern.ADMIN_API + "/purchase-orders/approval/{purchaseOrderId}")
-    public ResponseEntity<ResponseDto<PurchaseOrderResponseDto>> approvePurchaseOrder(
-            @AuthenticationPrincipal String loginId,
-            @PathVariable Long purchaseOrderId,
-            @RequestBody PurchaseOrderApproveRequestDto dto
-    ){
-        ResponseDto<PurchaseOrderResponseDto> response = purchaseOrderService.approvePurchaseOrder(loginId, purchaseOrderId, dto);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
 
 }
