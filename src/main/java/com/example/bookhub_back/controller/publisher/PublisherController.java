@@ -1,4 +1,4 @@
-package com.example.bookhub_back.controller;
+package com.example.bookhub_back.controller.publisher;
 
 import com.example.bookhub_back.common.constants.ApiMappingPattern;
 import com.example.bookhub_back.dto.PageResponseDto;
