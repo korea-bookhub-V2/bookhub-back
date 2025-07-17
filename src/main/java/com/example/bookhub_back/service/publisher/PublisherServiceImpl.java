@@ -24,40 +24,30 @@ public class PublisherServiceImpl implements PublisherService {
 
     private final PublisherRepository publisherRepository;
     @Override
-    public ResponseDto<PublisherResponseDto> createPublisher(PublisherRequestDto dto) {
-        PublisherResponseDto responseDto = null;
+    public ResponseDto<Void> createPublisher(PublisherRequestDto dto) {
+
         Publisher newPublisher = Publisher.builder()
                 .publisherName(dto.getPublisherName())
                 .build();
 
-        Publisher saved = publisherRepository.save(newPublisher);
+        publisherRepository.save(newPublisher);
 
-        responseDto = PublisherResponseDto.builder()
-                .publisherId(saved.getPublisherId())
-                .publisherName(saved.getPublisherName())
-                .build();
-
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto);
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
 
     }
 
     @Override
     @Transactional
-    public ResponseDto<PublisherResponseDto> updatePublisher(Long publisherId, PublisherRequestDto dto) {
+    public ResponseDto<Void> updatePublisher(Long publisherId, PublisherRequestDto dto) {
         PublisherResponseDto responseDto = null;
         Publisher publisher = publisherRepository.findById(publisherId)
                 .orElseThrow(() -> new EntityNotFoundException(ResponseCode.NO_EXIST_ID + publisherId));
 
         publisher.setPublisherName(dto.getPublisherName());
 
-        Publisher updatedPublisher = publisherRepository.save(publisher);
+        publisherRepository.save(publisher);
 
-        responseDto = PublisherResponseDto.builder()
-                .publisherId(updatedPublisher.getPublisherId())
-                .publisherName(updatedPublisher.getPublisherName())
-                .build();
-
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto);
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
 
     }
 
@@ -73,22 +63,31 @@ public class PublisherServiceImpl implements PublisherService {
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseDto<List<PublisherResponseDto>> getPublisherByNameContaining(String keyword) {
-        List<PublisherResponseDto> responseDtoList = null;
+    public ResponseDto<PageResponseDto<PublisherResponseDto>> getPublisherByNameContaining(String keyword, int page, int size) {
+
 
         if(keyword == null || keyword.trim().isEmpty()) {
             return ResponseDto.fail(ResponseCode.REQUIRED_FIELD_MISSING,ResponseMessage.REQUIRED_FIELD_MISSING);
         }
 
-        List<Publisher> publishers = publisherRepository.findByPublisherNameContaining(keyword);
-        responseDtoList = publishers.stream()
-                .map(publisher -> PublisherResponseDto.builder()
-                        .publisherId(publisher.getPublisherId())
-                        .publisherName(publisher.getPublisherName())
-                        .build()
-                ).collect(Collectors.toList());
+        PageRequest pageable = PageRequest.of(page,size);
 
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtoList);
+        Page<Publisher> result = publisherRepository.findByPublisherNameContaining(keyword, pageable);
+
+        List<PublisherResponseDto> content = result.getContent().stream()
+                .map(entity -> PublisherResponseDto.builder()
+                        .publisherId(entity.getPublisherId())
+                        .publisherName(entity.getPublisherName())
+                        .build())
+                .collect(Collectors.toList());
+        PageResponseDto<PublisherResponseDto> pageDto = PageResponseDto.of(
+                content,
+                result.getTotalElements(),
+                result.getTotalPages(),
+                result.getNumber()
+        );
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, pageDto);
     }
 
     @Override
