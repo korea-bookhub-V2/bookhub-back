@@ -10,13 +10,13 @@ import java.util.List;
 
 public interface PublisherService {
 
-    ResponseDto<PublisherResponseDto> createPublisher(@Valid PublisherRequestDto dto);
+    ResponseDto<Void> createPublisher(@Valid PublisherRequestDto dto);
 
-    ResponseDto<PublisherResponseDto> updatePublisher(Long publisherId, @Valid PublisherRequestDto dto);
+    ResponseDto<Void> updatePublisher(Long publisherId, @Valid PublisherRequestDto dto);
 
     ResponseDto<Void> deletePublisher(Long publisherId);
 
-    ResponseDto<List<PublisherResponseDto>> getPublisherByNameContaining(String keyword);
+    ResponseDto<PageResponseDto<PublisherResponseDto>> getPublisherByNameContaining(String keyword, int page, int size);
 
     ResponseDto<PageResponseDto<PublisherResponseDto>> getPublishers(int page, int size);
 

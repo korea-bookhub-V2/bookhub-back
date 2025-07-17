@@ -21,18 +21,18 @@ public class PublisherController {
     private final PublisherService publisherService;
 
     @PostMapping
-    public ResponseEntity<ResponseDto<PublisherResponseDto>> createPublisher(
+    public ResponseEntity<ResponseDto<Void>> createPublisher(
             @Valid @RequestBody PublisherRequestDto dto){
-        ResponseDto<PublisherResponseDto> publisher = publisherService.createPublisher(dto);
+        ResponseDto<Void> publisher = publisherService.createPublisher(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(publisher);
     }
 
     @PutMapping("/{publisherId}")
-    public ResponseEntity<ResponseDto<PublisherResponseDto>> updatePublisher(
+    public ResponseEntity<ResponseDto<Void>> updatePublisher(
             @PathVariable Long publisherId,
             @Valid @RequestBody PublisherRequestDto dto){
-        ResponseDto<PublisherResponseDto> changedPublisher = publisherService.updatePublisher(publisherId, dto);
-        return ResponseEntity.status(HttpStatus.OK).body(changedPublisher);
+        ResponseDto<Void> publisher = publisherService.updatePublisher(publisherId, dto);
+        return ResponseEntity.status(HttpStatus.OK).body(publisher);
     }
 
     @DeleteMapping("/{publisherId}")
@@ -48,7 +48,7 @@ public class PublisherController {
             @RequestParam (required = false) String keyword
     ){
         if(keyword != null && !keyword.isEmpty()){
-            ResponseDto<List<PublisherResponseDto>> responseDto = publisherService.getPublisherByNameContaining(keyword);
+            ResponseDto<PageResponseDto<PublisherResponseDto>> responseDto = publisherService.getPublisherByNameContaining(keyword, page, size);
             return ResponseEntity.status(HttpStatus.OK).body(responseDto);
         }ResponseDto<PageResponseDto<PublisherResponseDto>> publishers = publisherService.getPublishers(page,size);
         return ResponseEntity.status(HttpStatus.OK).body(publishers);
