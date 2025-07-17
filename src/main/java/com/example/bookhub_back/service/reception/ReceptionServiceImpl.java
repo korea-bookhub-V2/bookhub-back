@@ -107,7 +107,7 @@ public class ReceptionServiceImpl implements ReceptionService {
                             "에서 [" + reception.getBookTitle() + "] 수령 확정 되었습니다.")
                     .build());
         }
-        stockService.updateStock(null, stockUpdateRequestDto);
+        stockService.updateStock(null, null, stockUpdateRequestDto);
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
     }
 

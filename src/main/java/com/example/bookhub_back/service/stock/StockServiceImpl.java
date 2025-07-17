@@ -17,6 +17,7 @@ import com.example.bookhub_back.repository.BranchRepository;
 import com.example.bookhub_back.repository.EmployeeRepository;
 import com.example.bookhub_back.repository.stock.StockLogRepository;
 import com.example.bookhub_back.repository.stock.StockRepository;
+import com.example.bookhub_back.security.auth.EmployeePrincipal;
 import com.example.bookhub_back.service.alert.AlertService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -37,13 +38,15 @@ public class StockServiceImpl implements StockService{
     private final StockLogRepository stockLogRepository;
     private final AlertService alertService;
     private final AuthorityRepository authorityRepository;
-    private final EmployeeRepository employeeRepository;
     private final BookRepository bookRepository;
     private final BranchRepository branchRepository;
+    private final EmployeeRepository employeeRepository;
 
 
     @Override
-    public ResponseDto<Void> updateStock(Long stockId, StockUpdateRequestDto dto) {
+    public ResponseDto<Void> updateStock(
+
+            EmployeePrincipal employeePrincipal, Long stockId, StockUpdateRequestDto dto) {
 
 
         StockActionType actionType = StockActionType.valueOf(dto.getType().toUpperCase());
@@ -58,8 +61,11 @@ public class StockServiceImpl implements StockService{
             Book book = bookRepository.findById(dto.getBookIsbn())
                     .orElseThrow(() -> new IllegalArgumentException("도서가 존재하지 않습니다."));
 
-            Branch branch = branchRepository.findById(dto.getBranchId())
+            Branch branch = branchRepository.findById(employeePrincipal.getBranchId())
                     .orElseThrow(() -> new IllegalArgumentException("지점이 존재하지 않습니다."));
+
+            Employee employee = employeeRepository.findById(employeePrincipal.getEmployeeId())
+                    .orElseThrow(() -> new IllegalArgumentException("로그인한 사용자가 존재하지 않습니다"));
 
             stock = stockRepository.findByBookIsbnAndBranchId(book, branch)
                     .orElseGet(() -> stockRepository.save(
@@ -88,9 +94,10 @@ public class StockServiceImpl implements StockService{
 
         StockLog log = StockLog.builder()
                 .stockActionType(StockActionType.valueOf(dto.getType()))
-                .employee(employeeRepository.findById(dto.getEmployeeId()).orElseThrow(()-> new IllegalArgumentException(ResponseMessageKorean.USER_NOT_FOUND)))
+                .employee(employeeRepository.findById(employeePrincipal.getEmployeeId())
+                        .orElseThrow(() -> new IllegalArgumentException("로그인한 사용자가 존재하지 않습니다")))
                 .bookIsbn(bookRepository.findById(dto.getBookIsbn()).orElseThrow(()-> new IllegalArgumentException((ResponseMessageKorean.RESOURCE_NOT_FOUND))))
-                .branchId(branchRepository.findById(dto.getBranchId()).orElseThrow(()-> new IllegalArgumentException((ResponseMessageKorean.RESOURCE_NOT_FOUND))))
+                .branchId(branchRepository.findById(employeePrincipal.getBranchId()).orElseThrow(()-> new IllegalArgumentException((ResponseMessageKorean.RESOURCE_NOT_FOUND))))
                 .amount(dto.getAmount())
                 .bookAmount(updatedAmount)
                 .description(dto.getDescription())
