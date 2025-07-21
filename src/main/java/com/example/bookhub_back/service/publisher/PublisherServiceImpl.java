@@ -108,4 +108,17 @@ public class PublisherServiceImpl implements PublisherService {
         );
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, pageDto);
     }
+
+    @Override
+    public ResponseDto<PublisherResponseDto> getPublisherById(Long publisherId) {
+        Publisher publisher = publisherRepository.findById(publisherId)
+                .orElseThrow(() -> new EntityNotFoundException(ResponseCode.NO_EXIST_ID + publisherId));
+
+        PublisherResponseDto dto = null;
+        dto = PublisherResponseDto.builder()
+                .publisherId(publisherId)
+                .publisherName(publisher.getPublisherName())
+                .build();
+        return ResponseDto.success(ResponseCode.SUCCESS,ResponseMessage.SUCCESS,dto);
+    }
 }
