@@ -20,4 +20,5 @@ public interface PublisherService {
 
     ResponseDto<PageResponseDto<PublisherResponseDto>> getPublishers(int page, int size);
 
+    ResponseDto<PublisherResponseDto> getPublisherById(Long publisherId);
 }

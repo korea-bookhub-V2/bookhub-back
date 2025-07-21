@@ -42,7 +42,7 @@ public class PublisherController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDto<?>> getPublisher(
+    public ResponseEntity<ResponseDto<?>> getPublishers(
             @RequestParam (defaultValue = "0") int page,
             @RequestParam (defaultValue = "20") int size,
             @RequestParam (required = false) String keyword
@@ -52,6 +52,15 @@ public class PublisherController {
             return ResponseEntity.status(HttpStatus.OK).body(responseDto);
         }ResponseDto<PageResponseDto<PublisherResponseDto>> publishers = publisherService.getPublishers(page,size);
         return ResponseEntity.status(HttpStatus.OK).body(publishers);
+    }
+
+    @GetMapping("/{publisherId}")
+    public ResponseEntity<ResponseDto<PublisherResponseDto>> getPublisherById(
+            @PathVariable Long publisherId
+    ){
+        ResponseDto<PublisherResponseDto> publisher = publisherService.getPublisherById(publisherId);
+        return ResponseEntity.status(HttpStatus.OK).body(publisher);
+
     }
 
 
