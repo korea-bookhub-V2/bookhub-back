@@ -8,6 +8,7 @@ import com.example.bookhub_back.dto.author.request.AuthorRequestDto;
 import com.example.bookhub_back.dto.author.response.AuthorResponseDto;
 import com.example.bookhub_back.service.author.AuthorService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,8 @@ import java.util.List;
 public class AuthorController {
     private final AuthorService authorService;
 
-    @GetMapping("/{authorEmail}")
-    public ResponseEntity<ResponseDto<Void>> checkDuplicateAuthorEmail(@PathVariable String authorEmail) {
+    @GetMapping("/email-exists")
+    public ResponseEntity<ResponseDto<Void>> checkDuplicateAuthorEmail(@RequestParam String authorEmail) {
         ResponseDto<Void> responseDto = authorService.checkDuplicateAuthorEmail(authorEmail);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
@@ -33,13 +34,13 @@ public class AuthorController {
         return ResponseDto.toResponseEntity(HttpStatus.CREATED, responseDto);
     }
 
-    @GetMapping("/author-name/{authorName}")
+    @GetMapping
     public ResponseEntity<ResponseDto<PageResponseDto<AuthorResponseDto>>> getAllAuthorsByName(
-        int page,
-        int size,
-        @PathVariable String authorName
+        @RequestParam(defaultValue = "0") @Min(0) int page,
+        @RequestParam(defaultValue = "10") @Min(1) int size,
+        @RequestParam(required = false) String authorName
     ) {
-        ResponseDto<PageResponseDto<AuthorResponseDto>> responseDto = authorService.getAllAuthorsByName(page, size,authorName);
+        ResponseDto<PageResponseDto<AuthorResponseDto>> responseDto = authorService.getAllAuthorsByName(page, size, authorName);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 
