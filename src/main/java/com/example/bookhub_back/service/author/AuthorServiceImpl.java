@@ -26,10 +26,12 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public ResponseDto<Void> checkDuplicateAuthorEmail(String authorEmail) {
-        Author author = authorRepository.findByAuthorEmail(authorEmail)
-            .orElseThrow(() -> new IllegalArgumentException("중복된 이메일입니다."));
+        if (authorRepository.existsByAuthorEmail(authorEmail)) {
+            System.out.println("durlfwsdowfowffwfwfh");
+            return ResponseDto.fail(ResponseCode.DUPLICATED_EMAIL, ResponseMessageKorean.DUPLICATED_EMAIL);
+        }
 
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS);
+        return ResponseDto.success(ResponseCode.SUCCESS, "사용 가능한 이메일입니다.");
     }
 
     @Override
@@ -54,7 +56,7 @@ public class AuthorServiceImpl implements AuthorService {
         Page<Author> authors = null;
         List<AuthorResponseDto> responseDtos = null;
 
-        authors = authorRepository.findByAuthorNameContaining(authorName, pageable)
+        authors = authorRepository.searchAuthor(authorName, pageable)
             .orElseThrow(() -> new IllegalArgumentException("작가가 찾을 수 없습니다."));
 
         responseDtos = authors.stream()
