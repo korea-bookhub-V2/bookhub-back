@@ -25,10 +25,11 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Query("""
             SELECT e FROM Employee e
-            WHERE (:name IS NULL OR e.name LIKE CONCAT('%', :name, '%'))
-            AND (:branchId IS NULL OR e.branchId.branchId = :branchId)
-            AND (:positionId IS NULL OR e.positionId.positionId = :positionId)
-            AND (:authorityId IS NULL OR e.authorityId.authorityId = :authorityId)
+            WHERE e.isApproved = 'APPROVED'
+            AND (:name IS NULL OR e.name LIKE CONCAT('%', :name, '%'))
+            AND (:branchId = 0 OR e.branchId.branchId = :branchId)
+            AND (:positionId = 0 OR e.positionId.positionId = :positionId)
+            AND (:authorityId = 0 OR e.authorityId.authorityId = :authorityId)
             AND (:status IS NULL OR e.status = :status)
         """)
     Page<Employee> searchEmployee(

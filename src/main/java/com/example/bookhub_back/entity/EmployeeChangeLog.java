@@ -9,7 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "employees")
+@Table(name = "employee_change_logs")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

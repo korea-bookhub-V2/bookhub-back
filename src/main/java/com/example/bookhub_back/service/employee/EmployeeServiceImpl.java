@@ -53,7 +53,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         employees = employeeRepository.searchEmployee(name, branchId, positionId, authorityId, status, pageable);
 
         List<EmployeeListResponseDto> content = employees.stream()
-            .filter(employee -> employee.getIsApproved() == IsApproved.APPROVED)
             .map(employee -> EmployeeListResponseDto.builder()
                 .employeeId(employee.getEmployeeId())
                 .employeeNumber(employee.getEmployeeNumber())
@@ -189,6 +188,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         Long prePositionId = employee.getPositionId().getPositionId();
         Long preAuthorityId = employee.getAuthorityId().getAuthorityId();
 
+        if ((dto.getBranchId() == 0 || dto.getBranchId().equals(preBranchId))
+            && (dto.getPositionId() == 0 || dto.getPositionId().equals(prePositionId))
+            && (dto.getAuthorityId() == 0 || dto.getAuthorityId().equals(preAuthorityId))) {
+            return ResponseDto.fail(ResponseCode.INVALID_INPUT, "변경된 정보가 없습니다.");
+        }
+
         if (dto.getBranchId() != 0 && !dto.getBranchId().equals(preBranchId)) {
             employee.setBranchId(branchRepository.findById(dto.getBranchId())
                 .orElseThrow(() -> new IllegalArgumentException("지점 정보가 정확하지 않습니다.")));
@@ -211,8 +216,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .message("지점이 [" + employee.getBranchId().getBranchName() + "]로 변경되었습니다.")
                 .build()
             );
-        } else {
-            return ResponseDto.fail(ResponseCode.INVALID_INPUT_BRANCH, ResponseMessageKorean.INVALID_INPUT_BRANCH);
         }
 
         if (dto.getPositionId() != 0 && !dto.getPositionId().equals(prePositionId)) {
@@ -237,8 +240,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .message("직급이 [" + employee.getPositionId().getPositionName() + "]로 변경되었습니다.")
                 .build()
             );
-        } else {
-            return ResponseDto.fail(ResponseCode.INVALID_INPUT_POSITION, ResponseMessageKorean.INVALID_INPUT_POSITION);
         }
 
         if (dto.getAuthorityId() != 0 && !dto.getAuthorityId().equals(preAuthorityId)) {
@@ -263,8 +264,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .message("권한이 [" + employee.getAuthorityId().getAuthorityName() + "]로 변경되었습니다.")
                 .build()
             );
-        } else {
-            return ResponseDto.fail(ResponseCode.INVALID_INPUT_AUTHORITY, ResponseMessageKorean.INVALID_INPUT_AUTHORITY);
         }
 
         employeeRepository.save(employee);
