@@ -26,6 +26,9 @@ public class EmployeeExitLog {
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employeeId;
 
+    @Column(name = "applied_at")
+    private LocalDateTime appliedAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "authorizer_id", nullable = false)
     private Employee authorizerId;
