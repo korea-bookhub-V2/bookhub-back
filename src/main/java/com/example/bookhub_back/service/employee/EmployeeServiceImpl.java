@@ -108,10 +108,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         Page<EmployeeSignUpApproval> employeeSignUpApprovals = null;
         List<EmployeeSignUpApprovalResponseDto> content = null;
 
-        employeeSignUpApprovals = employeeSignUpApprovalRepository.findAll(pageable);
+        IsApproved isApproved = IsApproved.PENDING;
+
+        employeeSignUpApprovals = employeeSignUpApprovalRepository.searchEmployee(isApproved, pageable);
 
         content = employeeSignUpApprovals.stream()
-            .filter(employeeSignUpApproval -> employeeSignUpApproval.getIsApproved() == IsApproved.PENDING)
             .map(employeeSignUpApproval -> EmployeeSignUpApprovalResponseDto.builder()
                 .approvalId(employeeSignUpApproval.getApprovalId())
                 .employeeId(employeeSignUpApproval.getEmployeeId().getEmployeeId())

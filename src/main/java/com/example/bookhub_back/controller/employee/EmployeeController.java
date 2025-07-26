@@ -51,7 +51,10 @@ public class EmployeeController {
     }
 
     @GetMapping("/approval")
-    public ResponseEntity<ResponseDto<PageResponseDto<EmployeeSignUpApprovalResponseDto>>> getPendingEmployee(@Min(0) int page, @Min(1) int size) {
+    public ResponseEntity<ResponseDto<PageResponseDto<EmployeeSignUpApprovalResponseDto>>> getPendingEmployee(
+        @RequestParam(defaultValue = "0") @Min(0) int page,
+        @RequestParam(defaultValue = "10") @Min(1) int size
+    ) {
         ResponseDto<PageResponseDto<EmployeeSignUpApprovalResponseDto>> responseDto = employeeService.getPendingEmployee(page, size);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
@@ -71,7 +74,7 @@ public class EmployeeController {
         @PathVariable Long employeeId,
         @RequestBody EmployeeOrganizationUpdateRequestDto dto,
         @AuthenticationPrincipal EmployeePrincipal employeePrincipal
-    ){
+    ) {
         ResponseDto<Void> responseDto = employeeService.updateOrganization(employeeId, dto, employeePrincipal);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
