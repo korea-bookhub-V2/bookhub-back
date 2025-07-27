@@ -4,6 +4,7 @@ import com.example.bookhub_back.common.constants.ApiMappingPattern;
 import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.auth.request.*;
 import com.example.bookhub_back.dto.auth.response.SignInResponseDto;
+import com.example.bookhub_back.dto.employee.request.EmployeeSignUpUpdateRequestDto;
 import com.example.bookhub_back.service.auth.AuthService;
 import com.example.bookhub_back.service.mail.MailService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -82,4 +83,18 @@ public class AuthController {
         return mailService.passwordChange(token, dto);
     }
 
+    @PostMapping("/employees/{approvalId}/approve")
+    public Mono<ResponseEntity<ResponseDto<String>>> sendEmailSignUpResult(@PathVariable Long approvalId){
+        return mailService.sendEmailSignUpResult(approvalId);
+    }
+
+    @GetMapping("/employees/approve")
+    public Mono<ResponseEntity<ResponseDto<String>>> verifyEmployeeUpdate(@RequestParam String token){
+        return mailService.verifyEmployeeUpdate(token);
+    }
+
+    @PutMapping("/employees/approve")
+    public Mono<ResponseEntity<ResponseDto<String>>> employeeUpdate(@RequestParam String token, @RequestBody EmployeeSignUpUpdateRequestDto dto) {
+        return mailService.employeeUpdate(token, dto);
+    }
 }
