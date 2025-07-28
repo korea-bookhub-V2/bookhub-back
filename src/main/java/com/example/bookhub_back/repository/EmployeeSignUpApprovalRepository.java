@@ -30,8 +30,10 @@ public interface EmployeeSignUpApprovalRepository extends JpaRepository<Employee
               AND (:isApproved IS NULL OR esa.isApproved = :isApproved)
               AND (:deniedReason IS NULL OR (esa.deniedReason IS NOT NULL AND esa.deniedReason = :deniedReason))
               AND (:authorizerName IS NULL OR a.name LIKE CONCAT('%', :authorizerName, '%'))
-              AND (:startUpdatedAt IS NULL OR esa.updatedAt >= :startUpdatedAt)
-              AND (:endUpdatedAt IS NULL OR esa.updatedAt <= :endUpdatedAt)
+              AND (
+                (:startUpdatedAt IS NULL AND :endUpdatedAt IS NULL)
+                OR (esa.updatedAt BETWEEN :startUpdatedAt AND :endUpdatedAt)
+            )
         """)
     Page<EmployeeSignUpApproval> searchSignUpApproval(
         @Param("employeeName") String employeeName,
