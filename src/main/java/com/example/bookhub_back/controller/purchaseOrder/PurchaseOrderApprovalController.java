@@ -20,14 +20,6 @@ import java.time.LocalDate;
 public class PurchaseOrderApprovalController {
     private final PurchaseOrderApprovalService purchaseOrderApprovalService;
 
-    @GetMapping("/{purchaseOrderApprovalId}")
-    public ResponseEntity<ResponseDto<PurchaseOrderApprovalResponseDto>> getPurchaseOrderApprovalById(
-        @PathVariable Long purchaseOrderApprovalId
-    ) {
-        ResponseDto<PurchaseOrderApprovalResponseDto> response = purchaseOrderApprovalService.getPurchaseOrderApprovalById(purchaseOrderApprovalId);
-        return ResponseDto.toResponseEntity(HttpStatus.OK, response);
-    }
-
     @GetMapping
     public ResponseEntity<ResponseDto<PageResponseDto<PurchaseOrderApprovalResponseDto>>> searchPurchaseOrderApproval(
         @RequestParam(defaultValue = "0") @Min(0) int page,

@@ -8,7 +8,5 @@ import jakarta.validation.constraints.Min;
 import java.time.LocalDate;
 
 public interface PurchaseOrderApprovalService {
-    ResponseDto<PurchaseOrderApprovalResponseDto> getPurchaseOrderApprovalById(Long purchaseOrderApprovalId);
-
     ResponseDto<PageResponseDto<PurchaseOrderApprovalResponseDto>> searchPurchaseOrderApproval(@Min(0) int page, @Min(1) int size, String employeeName, Boolean isApproved, LocalDate startUpdatedAt, LocalDate endUpdatedAt);
 }
