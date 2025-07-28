@@ -25,18 +25,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PurchaseOrderApprovalServiceImpl implements PurchaseOrderApprovalService {
     private final PurchaseOrderApprovalRepository purchaseOrderApprovalRepository;
-    private final EmployeeRepository employeeRepository;
-
-    @Override
-    public ResponseDto<PurchaseOrderApprovalResponseDto> getPurchaseOrderApprovalById(Long purchaseOrderApprovalId) {
-        PurchaseOrderApprovalResponseDto responseDto = null;
-
-        PurchaseOrderApproval purchaseOrderApproval = purchaseOrderApprovalRepository.findById(purchaseOrderApprovalId)
-            .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
-
-        responseDto = changeToResponseDto(purchaseOrderApproval);
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto);
-    }
 
     @Override
     public ResponseDto<PageResponseDto<PurchaseOrderApprovalResponseDto>> searchPurchaseOrderApproval(int page, int size, String employeeName, Boolean isApproved, LocalDate startUpdatedAt, LocalDate endUpdatedAt) {
