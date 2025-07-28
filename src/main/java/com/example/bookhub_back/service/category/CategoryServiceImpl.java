@@ -74,7 +74,6 @@ public class CategoryServiceImpl implements CategoryService {
         if (dto.getCategoryName() != null) category.setCategoryName(dto.getCategoryName());
         if (dto.getCategoryLevel() != 0) category.setCategoryLevel(dto.getCategoryLevel());
         if (dto.getCategoryType() != null) category.setCategoryType(dto.getCategoryType());
-        if (dto.getCategoryOrder() != 0) category.setCategoryOrder(dto.getCategoryOrder());
         if (dto.getIsActive() != null) category.setIsActive(dto.getIsActive());
         Long policyId = dto.getDiscountPolicyId();
 
@@ -93,7 +92,6 @@ public class CategoryServiceImpl implements CategoryService {
                 .categoryName(updated.getCategoryName())
                 .categoryLevel(updated.getCategoryLevel())
                 .categoryType(updated.getCategoryType().toString())
-                .categoryOrder(updated.getCategoryOrder())
                 .isActive(updated.getIsActive())
                 .discountPolicyId(updated.getPolicyId() != null ? category.getPolicyId().getPolicyId() : null)
                 .build();
