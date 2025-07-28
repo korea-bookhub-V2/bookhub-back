@@ -29,5 +29,5 @@ public class EmployeeResponseDto {
     private LocalDate birthDate;
     private Status status;
     private IsApproved isApproved;
-    private LocalDateTime createdAt;
+    private String createdAt;
 }

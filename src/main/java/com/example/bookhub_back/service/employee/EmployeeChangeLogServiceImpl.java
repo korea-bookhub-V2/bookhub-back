@@ -3,6 +3,7 @@ package com.example.bookhub_back.service.employee;
 import com.example.bookhub_back.common.constants.ResponseCode;
 import com.example.bookhub_back.common.constants.ResponseMessageKorean;
 import com.example.bookhub_back.common.enums.ChangeType;
+import com.example.bookhub_back.common.utils.DateUtils;
 import com.example.bookhub_back.dto.PageResponseDto;
 import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.employee.response.EmployeeChangeLogListResponseDto;
@@ -60,7 +61,7 @@ public class EmployeeChangeLogServiceImpl implements EmployeeChangeLogService {
                     : null)
                 .authorizerNumber(employeeChangeLog.getAuthorizerId().getEmployeeNumber())
                 .authorizerName(employeeChangeLog.getAuthorizerId().getName())
-                .updatedAt(employeeChangeLog.getChangedAt())
+                .updatedAt(DateUtils.format(employeeChangeLog.getChangedAt()))
                 .build())
             .collect(Collectors.toList());
 

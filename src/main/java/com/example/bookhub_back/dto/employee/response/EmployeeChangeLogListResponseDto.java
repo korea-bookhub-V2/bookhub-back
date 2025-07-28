@@ -22,5 +22,5 @@ public class EmployeeChangeLogListResponseDto {
     private String preBranchName;
     private Long authorizerNumber;
     private String authorizerName;
-    private LocalDateTime updatedAt;
+    private String updatedAt;
 }

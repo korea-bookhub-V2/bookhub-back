@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 public interface EmployeeChangeLogRepository extends JpaRepository<EmployeeChangeLog, Long> {
     @Query("""
             SELECT e FROM EmployeeChangeLog e
-            WHERE (:employeeName IS NULL OR e.employeeId.name LIKE %:employeeName%)
-            AND (:authorizerName IS NULL OR e.authorizerId.name LIKE %:authorizerName%)
+            WHERE (:employeeName IS NULL OR e.employeeId.name LIKE CONCAT('%', :employeeName, '%'))
+            AND (:authorizerName IS NULL OR e.authorizerId.name LIKE CONCAT('%', :authorizerName, '%'))
             AND (:changeType IS NULL OR e.changeType = :changeType)
             AND (
               (:startUpdatedAt IS NULL AND :endUpdatedAt IS NULL)

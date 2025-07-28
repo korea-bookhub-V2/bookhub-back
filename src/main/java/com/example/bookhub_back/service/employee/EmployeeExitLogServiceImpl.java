@@ -3,6 +3,7 @@ package com.example.bookhub_back.service.employee;
 import com.example.bookhub_back.common.constants.ResponseCode;
 import com.example.bookhub_back.common.constants.ResponseMessageKorean;
 import com.example.bookhub_back.common.enums.ExitReason;
+import com.example.bookhub_back.common.utils.DateUtils;
 import com.example.bookhub_back.dto.PageResponseDto;
 import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.employee.response.EmployeeExitLogListResponseDto;
@@ -54,7 +55,7 @@ public class EmployeeExitLogServiceImpl implements EmployeeExitLogService {
                 .exitReason(employeeExitLog.getExitReason())
                 .authorizerNumber(employeeExitLog.getAuthorizerId().getEmployeeNumber())
                 .authorizerName(employeeExitLog.getAuthorizerId().getName())
-                .updatedAt(employeeExitLog.getExitAt())
+                .updatedAt(DateUtils.format(employeeExitLog.getExitAt()))
                 .build())
             .collect(Collectors.toList());
 
