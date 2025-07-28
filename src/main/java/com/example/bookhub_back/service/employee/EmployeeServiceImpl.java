@@ -96,7 +96,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             .phoneNumber(employee.getPhoneNumber())
             .birthDate(employee.getBirthDate())
             .status(employee.getStatus())
-            .createdAt(employee.getCreatedAt())
+            .createdAt(DateUtils.format(employee.getCreatedAt()))
             .build();
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, responseDto);

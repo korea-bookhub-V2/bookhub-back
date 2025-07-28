@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 public interface EmployeeExitLogRepository extends JpaRepository<EmployeeExitLog, Long> {
     @Query("""
         SELECT e FROM EmployeeExitLog e
-        WHERE (:employeeName IS NULL OR e.employeeId.name LIKE %:employeeName%)
-        AND (:authorizerName IS NULL OR e.authorizerId.name LIKE %:authorizerName%)
+        WHERE (:employeeName IS NULL OR e.employeeId.name LIKE CONCAT('%', :employeeName, '%'))
+        AND (:authorizerName IS NULL OR e.authorizerId.name LIKE CONCAT('%', :authorizerName, '%'))
         AND (:exitReason IS NULL OR e.exitReason = :exitReason)
         AND (
               (:startUpdatedAt IS NULL AND :endUpdatedAt IS NULL)

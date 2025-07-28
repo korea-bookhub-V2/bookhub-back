@@ -23,5 +23,5 @@ public class EmployeeExitLogListResponseDto {
     private ExitReason exitReason;
     private Long authorizerNumber;
     private String authorizerName;
-    private LocalDateTime updatedAt;
+    private String updatedAt;
 }
