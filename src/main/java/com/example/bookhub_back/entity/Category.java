@@ -41,7 +41,7 @@ public class Category {
     private CategoryType categoryType;
 
     @Column(name = "category_order")
-    private int categoryOrder = 0;
+    private Integer categoryOrder;
 
     @Column(name = "is_active")
     private Boolean isActive = true;
