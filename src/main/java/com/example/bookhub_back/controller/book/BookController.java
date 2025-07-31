@@ -44,9 +44,10 @@ public class BookController {
 
     @PutMapping(ApiMappingPattern.ADMIN_API + "/books/hidden/{isbn}")
     public ResponseDto<Void> hideBook(
-            @PathVariable String isbn,
-            @RequestHeader("Authorization") String token) {
-        return bookService.hideBook(isbn, token);
+            @AuthenticationPrincipal EmployeePrincipal employeePrincipal,
+            @PathVariable String isbn) {
+        Long employeeId = employeePrincipal.getEmployeeId();
+        return bookService.hideBook(isbn, employeeId);
     }
 
     @GetMapping(ApiMappingPattern.COMMON_API + "/books/search")

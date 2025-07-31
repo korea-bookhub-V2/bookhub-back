@@ -25,14 +25,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
-    private final CategoryRepository bookCategoryRepository;
+    private final CategoryRepository CategoryRepository;
     private final CategoryRepository categoryRepository;
     private final AuthorRepository authorRepository;
     private final PublisherRepository publisherRepository;
     private final PolicyRepository policyRepository;
     private final BookLogService bookLogService;
-    private EmployeeRepository employeeRepository;
-    private UploadFileRepository uploadFileRepository;
+    private final EmployeeRepository employeeRepository;
+    private final UploadFileRepository uploadFileRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Value("${file.upload-dir}")
@@ -128,9 +128,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public ResponseDto<Void> hideBook(String isbn, String token) {
-        String loginId = jwtTokenProvider.getLoginId(token);
-        Employee employee = employeeRepository.findByLoginId(loginId)
+    public ResponseDto<Void> hideBook(String isbn, Long employeeId) {
+        Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
 
         Book book = bookRepository.findByIsbn(isbn).orElseThrow(()-> new IllegalArgumentException("숨길 책을 찾을 수 없습니다."));
