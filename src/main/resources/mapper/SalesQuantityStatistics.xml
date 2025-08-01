@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.bookhub.bookhub_back.mapper.SalesQuantityStatisticsMapper">
+<mapper namespace="com.example.bookhub_back.mapper.SalesQuantityStatisticsMapper">
 
     <!-- 1. 베스트셀러 -->
 
@@ -185,13 +185,13 @@
     </select>
 
     <!-- 2) 할인항목별 -->
-    <select id="findSalesQuantityByDiscountPolicy" resultType="SalesQuantityStatisticsDto">
+    <select id="findSalesQuantityByPolicy" resultType="SalesQuantityStatisticsDto">
         SELECT
-            dp.policy_title AS policyTitle,
+            p.policy_title AS policyTitle,
             COALESCE(SUM(cod.amount), 0) AS totalSales
-        FROM discount_policies dp
+        FROM policies p
                  LEFT JOIN customer_orders co
-                           ON dp.policy_id = co.applied_policy_id
+                           ON p.policy_id = co.applied_policy_id
                                AND YEAR(co.customer_order_date_at) = #{year}
             AND QUARTER(co.customer_order_date_at) = #{quarter}
             AND NOT EXISTS (
@@ -201,7 +201,7 @@
             )
             LEFT JOIN customer_orders_detail cod
         ON cod.customer_order_id = co.customer_order_id
-        GROUP BY dp.policy_title
+        GROUP BY p.policy_title
         ORDER BY totalSales DESC;
     </select>
 
