@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @RestController
-@RequestMapping(ApiMappingPattern.ADMIN_API+"/purchase-orders")
+@RequestMapping(ApiMappingPattern.ADMIN_API+"/purchase-order-approvals")
 @RequiredArgsConstructor
 public class PurchaseOrderAdminController {
 
