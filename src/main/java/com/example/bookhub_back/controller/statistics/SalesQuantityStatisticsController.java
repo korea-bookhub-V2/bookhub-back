@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(ApiMappingPattern.BASIC_API)
+@RequestMapping()
 @RequiredArgsConstructor
 public class SalesQuantityStatisticsController {
     private final SalesQuantityStatisticsService salesQuantityStatisticsService;
