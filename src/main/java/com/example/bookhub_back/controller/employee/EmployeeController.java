@@ -12,7 +12,6 @@ import com.example.bookhub_back.dto.employee.response.EmployeeResponseDto;
 import com.example.bookhub_back.dto.employee.response.EmployeeSignUpApprovalResponseDto;
 import com.example.bookhub_back.security.auth.EmployeePrincipal;
 import com.example.bookhub_back.service.employee.EmployeeService;
-import com.example.bookhub_back.service.mail.MailService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployeeController {
     private final EmployeeService employeeService;
-    private final MailService mailService;
 
     @GetMapping
     public ResponseEntity<ResponseDto<PageResponseDto<EmployeeListResponseDto>>> searchEmployee(

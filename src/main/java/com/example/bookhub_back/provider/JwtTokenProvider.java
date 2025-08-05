@@ -49,7 +49,7 @@ public class JwtTokenProvider {
             .setSubject(loginId)
             .claim("email", email)
             .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+            .setExpiration(new Date(System.currentTimeMillis() + emailExpirationMs))
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
     }
