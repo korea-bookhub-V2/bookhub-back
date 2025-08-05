@@ -53,7 +53,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ResponseDto<Void>> logout (HttpServletResponse response) {
+    public ResponseEntity<ResponseDto<Void>> logout(HttpServletResponse response) {
         ResponseDto<Void> responseDto = authService.logout(response);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
@@ -69,7 +69,7 @@ public class AuthController {
     }
 
     @PostMapping("/password-change/email")
-    public Mono<ResponseEntity<ResponseDto<String>>> sendEmailResetPassword (@Valid @RequestBody PasswordFindSendEmailRequestDto dto) {
+    public Mono<ResponseEntity<ResponseDto<String>>> sendEmailResetPassword(@Valid @RequestBody PasswordFindSendEmailRequestDto dto) {
         return mailService.sendEmailResetPassword(dto);
     }
 
@@ -84,12 +84,12 @@ public class AuthController {
     }
 
     @PostMapping("/employees/{approvalId}/approve")
-    public Mono<ResponseEntity<ResponseDto<String>>> sendEmailSignUpResult(@PathVariable Long approvalId){
+    public Mono<ResponseEntity<ResponseDto<String>>> sendEmailSignUpResult(@PathVariable Long approvalId) {
         return mailService.sendEmailSignUpResult(approvalId);
     }
 
     @GetMapping("/employees/approve")
-    public Mono<ResponseEntity<ResponseDto<String>>> verifyEmployeeUpdate(@RequestParam String token){
+    public Mono<ResponseEntity<ResponseDto<String>>> verifyEmployeeUpdate(@RequestParam String token) {
         return mailService.verifyEmployeeUpdate(token);
     }
 

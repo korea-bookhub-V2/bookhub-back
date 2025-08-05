@@ -46,12 +46,12 @@ public class WebSecurityConfig {
         return http
             .csrf(AbstractHttpConfigurer::disable)
             .cors(withDefaults())
-            .authorizeHttpRequests(auth->auth
-                .requestMatchers("/api/v2/auth/**").permitAll()
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/v2/auth/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/files/**").permitAll()
                 .requestMatchers("/api/v2/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/v2/manager/**").hasAnyRole("ADMIN", "MANAGER")
-                .requestMatchers("/api/v2/common/**").hasAnyRole( "ADMIN", "MANAGER","STAFF")
+                .requestMatchers("/api/v2/common/**").hasAnyRole("ADMIN", "MANAGER", "STAFF")
                 .anyRequest().authenticated()
             )
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, customEmployeeDetailsService), UsernamePasswordAuthenticationFilter.class)

@@ -336,9 +336,6 @@ public class MailServiceImpl implements MailService {
                 return ResponseEntity.status(HttpStatus.OK)
                     .body(ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, "이메일 전송 성공"));
             } else {
-//                if(employeeSignUpApproval.getDeniedReason() == null){
-//                    employeeSignUpApproval.setDeniedReason("기타 사유");
-//                }
                 String reasonLabel = switch (employeeSignUpApproval.getDeniedReason()) {
                     case "ACCOUNT_ALREADY_EXISTS" -> "이미 계정이 발급된 사원";
                     case "CONTRACT_EMPLOYEE_RESTRICTED" -> "계약직/기간제 사용 제한";
