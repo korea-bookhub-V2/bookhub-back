@@ -54,7 +54,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .categoryName(saved.getCategoryName())
                 .categoryLevel(saved.getCategoryLevel())
                 .categoryType(saved.getCategoryType())
-                .categoryOrder(saved.getCategoryOrder())
+                .categoryOrder(0)
                 .build();
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto);
@@ -171,7 +171,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .categoryName(c.getCategoryName())
                 .categoryLevel(c.getCategoryLevel())
                 .categoryType(c.getCategoryType())
-                .categoryOrder(c.getCategoryOrder())
+                .categoryOrder(0)
                 .isActive(c.getIsActive())
                 .parentCategoryId(
                         c.getParentCategoryId() != null
