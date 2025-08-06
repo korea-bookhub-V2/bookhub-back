@@ -12,6 +12,8 @@ import com.example.bookhub_back.dto.employee.response.EmployeeResponseDto;
 import com.example.bookhub_back.dto.employee.response.EmployeeSignUpApprovalResponseDto;
 import com.example.bookhub_back.security.auth.EmployeePrincipal;
 import com.example.bookhub_back.service.employee.EmployeeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +27,11 @@ import java.util.List;
 @RestController
 @RequestMapping(ApiMappingPattern.ADMIN_API + "/employees")
 @RequiredArgsConstructor
+@Tag(name = "Employee API", description = "사원 관련 API입니다.")
 public class EmployeeController {
     private final EmployeeService employeeService;
 
+    @Operation(summary = "사원 검색 조회", description = "이름, 지점 ID, 직급 ID, 권한 ID, 재직 상태로 사원 정보를 조회합니다.")
     @GetMapping
     public ResponseEntity<ResponseDto<PageResponseDto<EmployeeListResponseDto>>> searchEmployee(
         @RequestParam(defaultValue = "0") @Min(0) int page,
@@ -42,12 +46,14 @@ public class EmployeeController {
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 
+    @Operation(summary = "사원 상세 조회", description = "사원 ID로 직원 상세를 조회합니다.")
     @GetMapping("/{employeeId}")
     public ResponseEntity<ResponseDto<EmployeeResponseDto>> getEmployeeById(@PathVariable Long employeeId) {
         ResponseDto<EmployeeResponseDto> responseDto = employeeService.getEmployeeById(employeeId);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 
+    @Operation(summary = "회원가입 승인 대기 중인 사원 조회", description = "회원가입 승인 대기 중인 사원을 조회합니다.")
     @GetMapping("/approval")
     public ResponseEntity<ResponseDto<PageResponseDto<EmployeeSignUpApprovalResponseDto>>> getPendingEmployee(
         @RequestParam(defaultValue = "0") @Min(0) int page,
@@ -57,6 +63,7 @@ public class EmployeeController {
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 
+    @Operation(summary = "회원가입 승인 상태 수정", description = "관리자만 회원가입 승인 또는 거절 합니다.")
     @PutMapping("/{employeeId}/approval")
     public ResponseEntity<ResponseDto<EmployeeSignUpApprovalResponseDto>> updateApproval(
         @PathVariable Long employeeId,
@@ -67,6 +74,7 @@ public class EmployeeController {
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 
+    @Operation(summary = "사원 정보 수정", description = "관리자만 사원 정보를 수정합니다.")
     @PutMapping("/{employeeId}/organization-update")
     public ResponseEntity<ResponseDto<Void>> updateOrganization(
         @PathVariable Long employeeId,
@@ -77,6 +85,7 @@ public class EmployeeController {
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 
+    @Operation(summary = "사원 재직 상태 수정", description = "관리자만 사원을 퇴직 상태로 수정합니다.")
     @PutMapping("/{employeeId}/status")
     public ResponseEntity<ResponseDto<Void>> updateStatus(
         @PathVariable Long employeeId,
