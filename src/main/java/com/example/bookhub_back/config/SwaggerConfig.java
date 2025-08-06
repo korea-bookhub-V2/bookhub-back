@@ -1,5 +1,6 @@
 package com.example.bookhub_back.config;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
@@ -9,7 +10,9 @@ import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@SecurityRequirement(name = "bearerAuth")
+@OpenAPIDefinition(
+    security = @SecurityRequirement(name = "bearerAuth")
+)
 
 @SecurityScheme(
     name = "bearerAuth",
