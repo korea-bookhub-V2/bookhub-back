@@ -6,6 +6,8 @@ import com.example.bookhub_back.dto.PageResponseDto;
 import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.employee.response.EmployeeSignUpApprovalsResponseDto;
 import com.example.bookhub_back.service.employee.EmployeeSignupApprovalService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,9 +23,11 @@ import java.util.List;
 @RestController
 @RequestMapping(ApiMappingPattern.ADMIN_API + "/employee-signup-approvals")
 @RequiredArgsConstructor
+@Tag(name = "Employee SignUp Approval API", description = "사원 회원가입 승인 로그 관련 API입니다.")
 public class EmployeeSignUpApprovalController {
     private final EmployeeSignupApprovalService employeeSignupApprovalService;
 
+    @Operation(summary = "사원 회원가입 승인 로그", description = "사원 이름, 관리자 이름, 승인 결과, 거절 사유, 변경 날짜로 사원 회원가입 승인 로그를 조회합니다.")
     @GetMapping
     public ResponseEntity<ResponseDto<PageResponseDto<EmployeeSignUpApprovalsResponseDto>>> searchSignUpApproval(
         @RequestParam(defaultValue = "0") @Min(0) int page,
