@@ -15,6 +15,9 @@ public class SalesQuantityStatisticsDto {
     Long totalSales;
     LocalDateTime orderDate;
     Integer orderMonth;
+    Integer yearWeek;
+    LocalDateTime weekStartDate;
+    LocalDateTime weekEndDate;
     String categoryName;
     String policyTitle;
     String branchName;

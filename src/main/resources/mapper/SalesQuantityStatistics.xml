@@ -158,7 +158,9 @@
     <!-- Weekly -->
     <select id="findWeeklySalesQuantity" resultType="SalesQuantityStatisticsDto">
         SELECT
-            DATE(co.customer_order_date_at) AS orderDate,
+            YEARWEEK(co.customer_order_date_at, 1) AS yearWeek,
+            MIN(DATE(co.customer_order_date_at)) AS weekStartDate,
+            MAX(DATE(co.customer_order_date_at)) AS weekEndDate,
             SUM(co.customer_order_total_amount) AS totalSales
         FROM customer_orders co
         LEFT JOIN refund_orders r
@@ -166,8 +168,8 @@
         WHERE YEAR(co.customer_order_date_at) = #{year}
           AND MONTH(co.customer_order_date_at) = #{month}
             AND r.order_id IS NULL
-        GROUP BY DATE(co.customer_order_date_at)
-        ORDER BY orderDate ASC;
+        GROUP BY YEARWEEK(co.customer_order_date_at, 1)
+        ORDER BY yearWeek ASC;
     </select>
 
     <!-- Monthly -->
