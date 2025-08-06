@@ -7,6 +7,8 @@ import com.example.bookhub_back.dto.author.request.AuthorCreateRequestDto;
 import com.example.bookhub_back.dto.author.request.AuthorRequestDto;
 import com.example.bookhub_back.dto.author.response.AuthorResponseDto;
 import com.example.bookhub_back.service.author.AuthorService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
