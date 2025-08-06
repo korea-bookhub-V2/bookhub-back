@@ -12,6 +12,7 @@ import com.example.bookhub_back.dto.stock.request.StockUpdateRequestDto;
 import com.example.bookhub_back.entity.*;
 import com.example.bookhub_back.provider.JwtTokenProvider;
 import com.example.bookhub_back.repository.*;
+import com.example.bookhub_back.security.auth.EmployeePrincipal;
 import com.example.bookhub_back.service.alert.AlertService;
 import com.example.bookhub_back.service.stock.StockService;
 import jakarta.transaction.Transactional;
@@ -107,7 +108,9 @@ public class ReceptionServiceImpl implements ReceptionService {
                             "에서 [" + reception.getBookTitle() + "] 수령 확정 되었습니다.")
                     .build());
         }
-        stockService.updateStock(null, null, stockUpdateRequestDto);
+//        stockService.updateStock(null, null, stockUpdateRequestDto);
+        EmployeePrincipal employeePrincipal = new EmployeePrincipal(employee);
+        stockService.updateStock(employeePrincipal,null,stockUpdateRequestDto);
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
     }
 
