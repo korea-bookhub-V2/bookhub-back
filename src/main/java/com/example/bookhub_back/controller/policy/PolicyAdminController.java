@@ -5,6 +5,8 @@ import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.policy.request.PolicyCreateRequestDto;
 import com.example.bookhub_back.dto.policy.request.PolicyUpdateRequestDto;
 import com.example.bookhub_back.service.policy.PolicyService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,12 +16,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(ApiMappingPattern.ADMIN_API+"/policies")
 @RequiredArgsConstructor
+@Tag(name = "Policy Admin API", description = "정책 관리 API 입니다.")
 public class PolicyAdminController {
 
 
     private final PolicyService policyService;
 
-
+    @Operation(summary = "정책 생성", description = "정책을 생성합니다")
     @PostMapping
     public ResponseEntity<ResponseDto<Void>> createPolicy(
             @Valid @RequestBody PolicyCreateRequestDto dto){
@@ -28,6 +31,7 @@ public class PolicyAdminController {
     }
 
 
+    @Operation(summary = "정책 수정", description = "정책을 수정합니다")
     @PutMapping("/{policyId}")
     public ResponseEntity<ResponseDto<Void>> updatePolicy(
             @PathVariable Long policyId,
@@ -37,6 +41,7 @@ public class PolicyAdminController {
     }
 
 
+    @Operation(summary = "정책 삭제", description = "정책을 삭제합니다")
     @DeleteMapping("/{policyId}")
     public ResponseEntity<ResponseDto<Void>> deletePolicy(@PathVariable Long policyId){
         ResponseDto<Void> responseDto = policyService.deletePolicy(policyId);

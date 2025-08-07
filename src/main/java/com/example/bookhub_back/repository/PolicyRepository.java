@@ -18,7 +18,7 @@ public interface PolicyRepository extends JpaRepository<Policy,Long> {
                              AND(:policyType IS NULL OR p.policyType = :policyType)
                              AND(:start IS NULL OR p.startDate >= :start)
                              AND(:end IS NULL OR p.endDate <= :end)
-            ORDER BY p.policyId DESC                                                
+            ORDER BY p.policyId DESC
             """)
     Page<Policy> findFiltered(
             @Param("keyword")String keyword,

@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "locations")
+@Table(name = "book_display_locations")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
