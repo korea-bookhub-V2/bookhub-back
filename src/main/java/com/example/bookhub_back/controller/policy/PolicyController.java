@@ -8,6 +8,8 @@ import com.example.bookhub_back.dto.policy.response.PolicyDetailResponseDto;
 import com.example.bookhub_back.dto.policy.response.PolicyListResponseDto;
 import com.example.bookhub_back.repository.PolicyRepository;
 import com.example.bookhub_back.service.policy.PolicyService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,10 +22,12 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping(ApiMappingPattern.COMMON_API + "/policies")
 @RequiredArgsConstructor
+@Tag(name = "Policy API", description = "정책 조회 API 입니다.")
 public class PolicyController {
 
     private final PolicyService policyService;
 
+    @Operation(summary = "정책 조회", description = "정책을 조회 합니다")
     @GetMapping
     public ResponseEntity<ResponseDto<PageResponseDto<PolicyListResponseDto>>> getPolicies(
             @RequestParam(defaultValue = "0") @Min(0) int page,

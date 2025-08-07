@@ -8,6 +8,8 @@ import com.example.bookhub_back.dto.purchaseOrder.request.PurchaseOrderCreateReq
 import com.example.bookhub_back.dto.purchaseOrder.request.PurchaseOrderRequestDto;
 import com.example.bookhub_back.dto.purchaseOrder.response.PurchaseOrderResponseDto;
 import com.example.bookhub_back.service.purchaseOrder.PurchaseOrderService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,10 +22,11 @@ import java.util.List;
 @RestController
 @RequestMapping(ApiMappingPattern.MANAGER_API+"/purchase-orders")
 @RequiredArgsConstructor
+@Tag(name = "Policy Manager API", description = "발주 API 입니다.")
 public class PurchaseOrderController {
     private final PurchaseOrderService purchaseOrderService;
 
-    // 발주 요청서 작성
+    @Operation(summary = "발주 생성", description = "발주 요청서를 작성합니다")
     @PostMapping
     public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> createPurchaseOrder(
             @AuthenticationPrincipal String loginId,
@@ -33,7 +36,7 @@ public class PurchaseOrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // 4) 발주 요청서 조회 - 조회 조건 없을 시 전체 조회 기능, 사용자 소속 지점 해당 발주서만 필터링
+    @Operation(summary = "발주 요청서 조회", description = "조회 조건 없을 시 전체 조회 기능, 사용자 소속 지점 해당 발주서만 필터링")
     @GetMapping
     public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> searchPurchaseOrder(
             @AuthenticationPrincipal String loginId,
@@ -45,7 +48,7 @@ public class PurchaseOrderController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 5) 발주 요청서 수정 - 발주량 수정
+    @Operation(summary = "발주 요청서 수정", description = "발주량 수정")
     @PutMapping("/{purchaseOrderId}")
     public ResponseEntity<ResponseDto<PurchaseOrderResponseDto>> updatePurchaseOrder(
             @RequestBody PurchaseOrderRequestDto dto,
@@ -55,7 +58,7 @@ public class PurchaseOrderController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 7) 발주 요청서 삭제
+    @Operation(summary = "발주 요청서 삭제", description = "발주 요청서를 삭제합니다")
     @DeleteMapping("/{purchaseOrderId}")
     public ResponseEntity<ResponseDto<Void>> deletePurchaseOrder(
             @PathVariable Long purchaseOrderId
