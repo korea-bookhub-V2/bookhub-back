@@ -16,5 +16,6 @@ public class PasswordResetRequestDto {
         message = "비밀번호는 8~16자의 영어, 숫자, 특수문자 각각 하나 이상 포함되어야 합니다.")
     private String password;
 
+    @NotBlank(message = "비밀번호 확인은 필수입니다.")
     private String confirmPassword;
 }
