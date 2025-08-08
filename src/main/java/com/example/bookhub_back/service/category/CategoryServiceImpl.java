@@ -148,7 +148,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
         Policy policy = category.getPolicyId();
 
-        if (policy != null) {
+        if (policy == null) {
             return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, null);
         }
 
