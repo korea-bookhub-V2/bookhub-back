@@ -13,6 +13,7 @@ import com.example.bookhub_back.dto.purchaseOrder.response.PurchaseOrderResponse
 import com.example.bookhub_back.entity.*;
 import com.example.bookhub_back.mapper.PurchaseOrderMapper;
 import com.example.bookhub_back.repository.*;
+import com.example.bookhub_back.security.auth.EmployeePrincipal;
 import com.example.bookhub_back.service.alert.AlertService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -36,21 +37,26 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private final AuthorityRepository authorityRepository;
     private final PurchaseOrderMapper purchaseOrderMapper;
 
+    private boolean hasRole(EmployeePrincipal principal, String role) {
+        return principal.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_" + role));
+    }
+
+
 
     @Override
     @Transactional
-    public ResponseDto<List<PurchaseOrderResponseDto>> createPurchaseOrder(String loginId, PurchaseOrderCreateRequestDto dto) {
+    public ResponseDto<List<PurchaseOrderResponseDto>> createPurchaseOrder(EmployeePrincipal principal, PurchaseOrderCreateRequestDto dto) {
         List<PurchaseOrderResponseDto> responseDtos = null;
         List<PurchaseOrder> purchaseOrders = new ArrayList<>();
 
-        Employee employee = employeeRepository.findByLoginId(loginId)
+        Employee employee = employeeRepository.findById(principal.getEmployeeId())
                 .orElseThrow(IllegalArgumentException::new);
-
         Branch branch = employee.getBranchId();
 
-        List<PurchaseOrderRequestDto> requestDtos = dto.getPurchaseOrders();
 
-        for(PurchaseOrderRequestDto requestDto: requestDtos) {
+
+        for (PurchaseOrderRequestDto requestDto : dto.getPurchaseOrders()) {
             purchaseOrders.add(PurchaseOrder.builder()
                     .purchaseOrderAmount(requestDto.getPurchaseOrderAmount())
                     .purchaseOrderStatus(PurchaseOrderStatus.REQUESTED)
@@ -108,17 +114,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     @Override
     public ResponseDto<List<PurchaseOrderResponseDto>> searchPurchaseOrder(
-            String loginId, String employeeName, String bookIsbn, PurchaseOrderStatus purchaseOrderStatus
+            EmployeePrincipal principal, String employeeName, String bookIsbn, PurchaseOrderStatus purchaseOrderStatus
     ) {
-        List<PurchaseOrderResponseDto> responseDtos = null;
+        String branchName = principal.getBranchName();
+        List<PurchaseOrderResponseDto> responseDtos =  purchaseOrderMapper.searchPurchaseOrder(employeeName, bookIsbn, purchaseOrderStatus);
 
-        responseDtos = purchaseOrderMapper.searchPurchaseOrder(employeeName, bookIsbn, purchaseOrderStatus);
-
-        // 사용자의 지점에 해당하는 purchaseOrders 필터링
-        Employee employee = employeeRepository.findByLoginId(loginId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        String branchName = employee.getBranchId().getBranchName();
 
         List<PurchaseOrderResponseDto> filteredresponseDto = responseDtos.stream()
                 .filter(purchaseOrder -> purchaseOrder.getBranchName().equals(branchName))
@@ -145,15 +145,14 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto);
     }
 
-
     @Override
     @Transactional
-    public ResponseDto<PurchaseOrderResponseDto> approvePurchaseOrder(String loginId, Long purchaseOrderId, PurchaseOrderApproveRequestDto dto) {
+    public ResponseDto<PurchaseOrderResponseDto> approvePurchaseOrder(EmployeePrincipal principal, Long purchaseOrderId, PurchaseOrderApproveRequestDto dto) {
 
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId)
                 .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.FAILED + purchaseOrderId));
 
-        Employee employee = employeeRepository.findByLoginId(loginId)
+        Employee employee = employeeRepository.findByLoginId(principal.getLoginId())
                 .orElseThrow(IllegalArgumentException::new);
 
         if(purchaseOrder.getPurchaseOrderStatus() == PurchaseOrderStatus.REQUESTED) {

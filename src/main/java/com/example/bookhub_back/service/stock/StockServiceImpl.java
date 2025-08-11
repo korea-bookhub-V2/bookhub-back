@@ -27,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -45,28 +46,29 @@ public class StockServiceImpl implements StockService{
 
 
     @Override
+    @Transactional
     public ResponseDto<Void> updateStock(
-
             EmployeePrincipal employeePrincipal, Long stockId, StockUpdateRequestDto dto) {
 
-
-        StockActionType actionType = StockActionType.valueOf(dto.getType().toUpperCase(Locale.ROOT));
-        Long updatedAmount;
+        final StockActionType actionType = StockActionType.valueOf(dto.getType().toUpperCase(Locale.ROOT));
+        final Employee employee = employeeRepository.findById(employeePrincipal.getEmployeeId())
+                .orElseThrow(()-> new IllegalArgumentException("Employee not found"));
 
         Stock stock;
+        Book book;
+        Branch branch;
 
         if(stockId != null){
             stock = stockRepository.findById(stockId)
                     .orElseThrow(() -> new IllegalArgumentException("해당 재고 아이디가 존재하지 않습니다"));
+            book = stock.getBookIsbn();
+            branch = stock.getBranchId();
         }else{
-            Book book = bookRepository.findById(dto.getBookIsbn())
+            book = bookRepository.findById(dto.getBookIsbn())
                     .orElseThrow(() -> new IllegalArgumentException("도서가 존재하지 않습니다."));
 
-            Branch branch = branchRepository.findById(employeePrincipal.getBranchId())
+            branch = branchRepository.findById(employeePrincipal.getBranchId())
                     .orElseThrow(() -> new IllegalArgumentException("지점이 존재하지 않습니다."));
-
-            Employee employee = employeeRepository.findById(employeePrincipal.getEmployeeId())
-                    .orElseThrow(() -> new IllegalArgumentException("로그인한 사용자가 존재하지 않습니다"));
 
             stock = stockRepository.findByBookIsbnAndBranchId(book, branch)
                     .orElseGet(() -> stockRepository.save(
@@ -78,14 +80,18 @@ public class StockServiceImpl implements StockService{
                     ));
         }
 
+        final Long requestAmount = dto.getAmount();
+        final Long beforeAmount = stock.getBookAmount();
+        final Long updatedAmount;
+
 
         switch (actionType) {
-            case IN -> updatedAmount = stock.getBookAmount() + dto.getAmount();
+            case IN -> updatedAmount = beforeAmount + requestAmount;
             case OUT, LOSS -> {
-                if(stock.getBookAmount() < dto.getAmount()){
+                if(beforeAmount < requestAmount){
                     throw new IllegalArgumentException("재고부족");
                 }
-                updatedAmount = stock.getBookAmount() - dto.getAmount();
+                updatedAmount = beforeAmount - requestAmount;
             }
             default -> throw new IllegalArgumentException("잘못된 타입");
 
@@ -94,13 +100,13 @@ public class StockServiceImpl implements StockService{
         stockRepository.save(stock);
 
         StockLog log = StockLog.builder()
-                .stockActionType(StockActionType.valueOf(dto.getType().toUpperCase(Locale.ROOT)))
-                .employee(employeeRepository.findById(employeePrincipal.getEmployeeId())
-                        .orElseThrow(() -> new IllegalArgumentException("로그인한 사용자가 존재하지 않습니다")))
-                .bookIsbn(bookRepository.findById(dto.getBookIsbn()).orElseThrow(()-> new IllegalArgumentException((ResponseMessageKorean.RESOURCE_NOT_FOUND))))
-                .branchId(branchRepository.findById(employeePrincipal.getBranchId()).orElseThrow(()-> new IllegalArgumentException((ResponseMessageKorean.RESOURCE_NOT_FOUND))))
-                .amount(dto.getAmount())
+                .stockActionType(actionType)
+                .employee(employee)
+                .bookIsbn(book)
+                .branchId(branch)
+                .amount(requestAmount)
                 .bookAmount(updatedAmount)
+                .actionDate(LocalDate.now())
                 .description(dto.getDescription())
                 .build();
 

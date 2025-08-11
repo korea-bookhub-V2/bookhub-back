@@ -11,7 +11,7 @@
         b.book_title,
         b.book_price,
         p.purchase_order_amount,
-        (b.book_price * p.purchase_order_amount) as purchaseOrderAmount,
+        (b.book_price * p.purchase_order_amount) as purchaseOrderPrice,
         p.purchase_order_status,
         p.purchase_order_date_at,
         e.name as employeeName,

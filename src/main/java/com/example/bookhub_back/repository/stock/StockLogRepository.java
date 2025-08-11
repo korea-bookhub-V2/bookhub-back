@@ -16,16 +16,19 @@ public interface StockLogRepository extends JpaRepository<StockLog,Long> {
     @Query("""
            SELECT sl
            FROM StockLog sl
-                      WHERE(:keyword IS NULL OR sl.description LIKE CONCAT ('%', :keyword, '%'))
-                                 AND(:stockActionType IS NULL OR sl.stockActionType = :stockActionType)
+                      WHERE(:bookTitle IS NULL OR sl.bookIsbn.bookTitle LIKE CONCAT ('%', :bookTitle, '%'))
+                                 AND(:branchId IS NULL OR sl.branchId.branchId = :branchId)
+                                 AND(:type IS NULL OR sl.stockActionType = :type)
                                  AND(:employeeName IS NULL OR sl.employee.name = :employeeName)
                                 AND(:start IS NULL OR sl.actionDate >= :start)
-                                AND(:end IS NULL OR sl.actionDate <= :end)            
+                                AND(:end IS NULL OR sl.actionDate <= :end)
+                                           ORDER BY sl.logId DESC
            """)
     Page<StockLog> findFilteredStockLog(
             @Param("employeeName") String employeeName,
-            @Param("stockActionType") StockActionType stockActionType,
-            @Param("keyword") String keyword,
+            @Param("type") StockActionType type,
+            @Param("bookTitle") String bookTitle,
+            @Param("branchId")  Long branchId,
             @Param("start") LocalDate start,
             @Param("end")LocalDate end,
             Pageable pageable);

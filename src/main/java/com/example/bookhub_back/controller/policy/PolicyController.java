@@ -6,7 +6,6 @@ import com.example.bookhub_back.dto.PageResponseDto;
 import com.example.bookhub_back.dto.ResponseDto;
 import com.example.bookhub_back.dto.policy.response.PolicyDetailResponseDto;
 import com.example.bookhub_back.dto.policy.response.PolicyListResponseDto;
-import com.example.bookhub_back.repository.PolicyRepository;
 import com.example.bookhub_back.service.policy.PolicyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,9 +34,9 @@ public class PolicyController {
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) PolicyType policyType,
             @RequestParam(required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate start,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
             @RequestParam(required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate end){
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end){
         ResponseDto<PageResponseDto<PolicyListResponseDto>> response = policyService.getFilteredPolicies(page,size,keyword,policyType,start,end);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

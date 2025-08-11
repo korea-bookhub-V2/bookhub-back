@@ -21,12 +21,12 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     @Query("""
             SELECT s 
               FROM Stock s
-             WHERE (:keyword IS NULL OR s.bookIsbn.bookTitle LIKE CONCAT('%', :keyword, '%'))
+             WHERE (:bookTitle IS NULL OR s.bookIsbn.bookTitle LIKE CONCAT('%', :bookTitle, '%'))
                AND (:branchId    IS NULL OR s.branchId.branchId  = :branchId)      
             ORDER BY s.stockId DESC
             """)
     Page<Stock> findFiltered(
-            @Param("keyword") String keyword,
+            @Param("bookTitle") String bookTitle,
             @Param("branchId") Long branchId,
             Pageable pageable);
 }

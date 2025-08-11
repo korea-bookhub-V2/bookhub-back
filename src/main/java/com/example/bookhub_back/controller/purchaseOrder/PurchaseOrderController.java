@@ -7,6 +7,7 @@ import com.example.bookhub_back.dto.purchaseOrder.request.PurchaseOrderApproveRe
 import com.example.bookhub_back.dto.purchaseOrder.request.PurchaseOrderCreateRequestDto;
 import com.example.bookhub_back.dto.purchaseOrder.request.PurchaseOrderRequestDto;
 import com.example.bookhub_back.dto.purchaseOrder.response.PurchaseOrderResponseDto;
+import com.example.bookhub_back.security.auth.EmployeePrincipal;
 import com.example.bookhub_back.service.purchaseOrder.PurchaseOrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,22 +30,22 @@ public class PurchaseOrderController {
     @Operation(summary = "발주 생성", description = "발주 요청서를 작성합니다")
     @PostMapping
     public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> createPurchaseOrder(
-            @AuthenticationPrincipal String loginId,
+            @AuthenticationPrincipal EmployeePrincipal principal,
             @Valid @RequestBody PurchaseOrderCreateRequestDto dto
     ) {
-        ResponseDto<List<PurchaseOrderResponseDto>> response = purchaseOrderService.createPurchaseOrder(loginId, dto);
+        ResponseDto<List<PurchaseOrderResponseDto>> response = purchaseOrderService.createPurchaseOrder(principal, dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @Operation(summary = "발주 요청서 조회", description = "조회 조건 없을 시 전체 조회 기능, 사용자 소속 지점 해당 발주서만 필터링")
     @GetMapping
     public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> searchPurchaseOrder(
-            @AuthenticationPrincipal String loginId,
+            @AuthenticationPrincipal EmployeePrincipal principal,
             @RequestParam(required = false) String employeeName,
             @RequestParam(required = false) String bookIsbn,
             @RequestParam(required = false) PurchaseOrderStatus purchaseOrderStatus
     ) {
-        ResponseDto<List<PurchaseOrderResponseDto>> response = purchaseOrderService.searchPurchaseOrder(loginId, employeeName, bookIsbn, purchaseOrderStatus);
+        ResponseDto<List<PurchaseOrderResponseDto>> response = purchaseOrderService.searchPurchaseOrder(principal, employeeName, bookIsbn, purchaseOrderStatus);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

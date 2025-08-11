@@ -39,6 +39,7 @@ public class PolicyServiceImpl implements PolicyService{
     private final AlertServiceImpl alertService;
 
     @Override
+    @Transactional
     public ResponseDto<Void> createPolicy(PolicyCreateRequestDto dto) {
         if(dto.getPolicyType() == PolicyType.TOTAL_PRICE_DISCOUNT && dto.getTotalPriceAchieve() == null) {
             throw new IllegalArgumentException(ResponseCode.VALIDATION_FAIL);
@@ -73,6 +74,7 @@ public class PolicyServiceImpl implements PolicyService{
     }
 
     @Override
+    @Transactional
     public ResponseDto<Void> updatePolicy(Long policyId, PolicyUpdateRequestDto dto) {
         Policy policy = policyRepository.findById(policyId).orElseThrow(() -> new EntityNotFoundException(ResponseCode.NO_EXIST_ID + policyId));
 
@@ -112,6 +114,7 @@ public class PolicyServiceImpl implements PolicyService{
     }
 
     @Override
+    @Transactional
     public ResponseDto<Void> deletePolicy(Long policyId) {
         Policy policy = policyRepository.findById(policyId).orElseThrow(() -> new EntityNotFoundException(ResponseCode.NO_EXIST_ID + policyId));
 
