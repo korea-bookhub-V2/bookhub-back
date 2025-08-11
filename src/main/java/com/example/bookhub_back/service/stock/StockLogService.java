@@ -9,7 +9,9 @@ import jakarta.validation.constraints.Min;
 import java.time.LocalDate;
 
 public interface StockLogService {
-    ResponseDto<PageResponseDto<StockLogResponseDto>> getFilteredStockLogs(@Min(0) int page, @Min(1) int size, String employeeName, String keyword, StockActionType stockActionType, LocalDate start, LocalDate end);
+    ResponseDto<PageResponseDto<StockLogResponseDto>> getFilteredStockLogs(
+            @Min(0) int page, @Min(1) int size, String employeeName, String bookTitle, Long branchId, String keyword,
+            StockActionType type, LocalDate start, LocalDate end);
 
     ResponseDto<StockLogResponseDto> getStockLogById(Long stockLogId);
 }

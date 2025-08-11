@@ -30,9 +30,16 @@ public class StockLogServiceImpl implements StockLogService{
     private final StockLogRepository stockLogRepository;
 
     @Override
-    public ResponseDto<PageResponseDto<StockLogResponseDto>> getFilteredStockLogs(int page, int size, String employeeName, String keyword, StockActionType stockActionType, LocalDate start, LocalDate end) {
+    public ResponseDto<PageResponseDto<StockLogResponseDto>> getFilteredStockLogs(
+            int page, int size, String employeeName, String bookTitle, Long branchId, String keyword,
+            StockActionType type, LocalDate start, LocalDate end) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<StockLog> result = stockLogRepository.findFilteredStockLog(employeeName,stockActionType,keyword != null && keyword.isBlank() ? null : keyword,start,end,pageable);
+        Page<StockLog> result = stockLogRepository.findFilteredStockLog(
+                (employeeName != null && !employeeName.isBlank()) ? employeeName : null,
+                type,
+                bookTitle != null && !bookTitle.isBlank() ? bookTitle : null,
+                branchId,
+                start,end,pageable);
 
         List<StockLogResponseDto> content = result.getContent().stream()
                 .map(stockLog -> StockLogResponseDto.builder()

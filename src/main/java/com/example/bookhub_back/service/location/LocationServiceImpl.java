@@ -97,6 +97,7 @@ public class LocationServiceImpl implements LocationService {
         List<LocationResponseDto> content = results.getContent().stream()
                 .map(p -> LocationResponseDto.builder()
                         .locationId(p.getLocationId())
+                        .branchName(p.getBranch().getBranchName())
                         .bookTitle(p.getBook().getBookTitle())
                         .floor(p.getFloor())
                         .hall(p.getHall())

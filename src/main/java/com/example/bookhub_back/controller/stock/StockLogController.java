@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping(ApiMappingPattern.ADMIN_API+"/stock-log")
+@RequestMapping(ApiMappingPattern.ADMIN_API+"/stock-logs")
 @RequiredArgsConstructor
 @Tag(name = "Stock Log API", description = "재고 로그 조회 API 입니다.")
 public class StockLogController {
@@ -30,13 +30,15 @@ public class StockLogController {
             @RequestParam(defaultValue = "0") @Min(0) int page,
             @RequestParam(defaultValue = "10") @Min(1) int size,
             @RequestParam(required = false) String employeeName,
+            @RequestParam(required = false) String bookTitle,
+            @RequestParam(required = false) Long branchId,
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false)StockActionType stockActionType,
+            @RequestParam(required = false)StockActionType type,
             @RequestParam(required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate start,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
             @RequestParam(required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate end){
-        ResponseDto<PageResponseDto<StockLogResponseDto>> response = stockLogService.getFilteredStockLogs(page,size, employeeName, keyword,stockActionType,start,end);
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end){
+        ResponseDto<PageResponseDto<StockLogResponseDto>> response = stockLogService.getFilteredStockLogs(page,size, employeeName, bookTitle, branchId, keyword,type,start,end);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

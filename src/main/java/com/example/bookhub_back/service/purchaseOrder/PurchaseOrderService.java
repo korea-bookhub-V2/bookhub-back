@@ -6,20 +6,21 @@ import com.example.bookhub_back.dto.purchaseOrder.request.PurchaseOrderApproveRe
 import com.example.bookhub_back.dto.purchaseOrder.request.PurchaseOrderCreateRequestDto;
 import com.example.bookhub_back.dto.purchaseOrder.request.PurchaseOrderRequestDto;
 import com.example.bookhub_back.dto.purchaseOrder.response.PurchaseOrderResponseDto;
+import com.example.bookhub_back.security.auth.EmployeePrincipal;
 import jakarta.validation.Valid;
 
 import java.util.List;
 
 public interface PurchaseOrderService {
-    ResponseDto<List<PurchaseOrderResponseDto>> createPurchaseOrder(String loginId, @Valid PurchaseOrderCreateRequestDto dto);
+    ResponseDto<List<PurchaseOrderResponseDto>> createPurchaseOrder(EmployeePrincipal principal, @Valid PurchaseOrderCreateRequestDto dto);
 
     ResponseDto<PurchaseOrderResponseDto> updatePurchaseOrder(PurchaseOrderRequestDto dto, Long purchaseOrderId);
 
     ResponseDto<Void> deletePurchaseOrder(Long purchaseOrderId);
 
-    ResponseDto<List<PurchaseOrderResponseDto>> searchPurchaseOrder(String loginId, String employeeName, String bookIsbn, PurchaseOrderStatus purchaseOrderStatus);
+    ResponseDto<List<PurchaseOrderResponseDto>> searchPurchaseOrder(EmployeePrincipal principal, String employeeName, String bookIsbn, PurchaseOrderStatus purchaseOrderStatus);
 
-    ResponseDto<PurchaseOrderResponseDto> approvePurchaseOrder(String loginId, Long purchaseOrderId, PurchaseOrderApproveRequestDto dto);
+    ResponseDto<PurchaseOrderResponseDto> approvePurchaseOrder(EmployeePrincipal principal, Long purchaseOrderId, PurchaseOrderApproveRequestDto dto);
 
     ResponseDto<List<PurchaseOrderResponseDto>> getAllPurchaseOrdersRequested();
 }
