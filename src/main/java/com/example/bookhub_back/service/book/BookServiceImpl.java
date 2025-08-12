@@ -84,9 +84,9 @@ public class BookServiceImpl implements BookService {
         Long oldRate = oldPolicy != null ? oldPolicy.getDiscountPercent() : null;
         book.setBookPrice(dto.getBookPrice());
         if(dto.getPolicyId() != null) {
-            Category newCategory = categoryRepository.findById(dto.getCategoryId())
-                    .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
-            book.setCategoryId(newCategory);
+            Policy newPolicy = policyRepository.findById(dto.getPolicyId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 정책입니다."));
+            book.setPolicyId(newPolicy);
         }
         book.setDescription(dto.getDescription());
         BookStatus newStatus = dto.getBookStatus() != null
