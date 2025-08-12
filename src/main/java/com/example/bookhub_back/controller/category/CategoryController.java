@@ -50,25 +50,25 @@ public class CategoryController {
     }
 
     @Operation(summary = "트리형 카테고리 조회", description = "트리형 카테고리 구조를 전체 조회합니다.")
-    @GetMapping(ApiMappingPattern.ADMIN_API + "/categories/tree")
+    @GetMapping(ApiMappingPattern.COMMON_API + "/categories/tree")
     public ResponseDto<List<CategoryTreeResponseDto>> getCategoryTree(@RequestParam CategoryType type) {
         return categoryService.getCategoryTree(type);
     }
 
     @Operation(summary = "활성 카테고리만 조회", description = "활성화된 카테고리만 조회합니다.")
-    @GetMapping(ApiMappingPattern.ADMIN_API + "/categories/active")
+    @GetMapping(ApiMappingPattern.COMMON_API + "/categories/active")
     public ResponseDto<List<CategoryTreeResponseDto>> getActiveCategories() {
         return categoryService.getAllActiveCategories();
     }
 
     @Operation(summary = "대분류 카테고리 조회", description = "대분류 카테고리를 조회합니다(Ex 소설)")
-    @GetMapping(ApiMappingPattern.ADMIN_API + "/categories/roots")
+    @GetMapping(ApiMappingPattern.COMMON_API + "/categories/roots")
     public ResponseDto<List<CategoryTreeResponseDto>> getRootCategories() {
         return categoryService.getRootCategories();
     }
 
     @Operation(summary = "소분류 카테고리 조회", description = "대분류의 자식 카테고리(소분류)를 조회합니다.")
-    @GetMapping(ApiMappingPattern.ADMIN_API + "/categories/subcategories/{parentId}")
+    @GetMapping(ApiMappingPattern.COMMON_API + "/categories/subcategories/{parentId}")
     public ResponseDto<List<CategoryTreeResponseDto>> getSubCategories(@PathVariable Long parentId) {
         return categoryService.getSubCategories(parentId);
     }
