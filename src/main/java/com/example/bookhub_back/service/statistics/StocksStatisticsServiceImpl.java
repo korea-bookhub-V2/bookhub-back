@@ -122,7 +122,6 @@ public class StocksStatisticsServiceImpl implements StocksStatisticsService {
         if (etcSum > 0) {
             top10.add(new CategoryStockResponseDto("기타", etcSum));
         }
-        System.out.println(top10.get(1));
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, top10);
     }
 }
