@@ -2,126 +2,78 @@ package com.example.bookhub_back.service.statistics;
 
 import com.example.bookhub_back.common.constants.ResponseCode;
 import com.example.bookhub_back.common.constants.ResponseMessageKorean;
-import com.example.bookhub_back.common.enums.StockActionType;
 import com.example.bookhub_back.dto.ResponseDto;
-import com.example.bookhub_back.dto.statistics.projection.BranchStockBarChartProjection;
-import com.example.bookhub_back.dto.statistics.projection.CategoryStockProjection;
-import com.example.bookhub_back.dto.statistics.projection.TimeStockChartProjection;
-import com.example.bookhub_back.dto.statistics.projection.ZeroStockProjection;
 import com.example.bookhub_back.dto.statistics.response.stocks.BranchStockBarChartDto;
 import com.example.bookhub_back.dto.statistics.response.stocks.CategoryStockResponseDto;
 import com.example.bookhub_back.dto.statistics.response.stocks.TimeStockChartResponseDto;
-import com.example.bookhub_back.entity.Branch;
-import com.example.bookhub_back.repository.BranchRepository;
-import com.example.bookhub_back.repository.statistics.StocksStatisticsRepository;
+import com.example.bookhub_back.dto.statistics.response.stocks.ZeroStockResponseDto;
+import com.example.bookhub_back.mapper.StocksStatisticsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class StocksStatisticsServiceImpl implements StocksStatisticsService {
-    private final StocksStatisticsRepository stocksStatisticsRepository;
-    private final BranchRepository branchRepository;
+
+    private final StocksStatisticsMapper stocksStatisticsMapper;
 
     @Override
     public ResponseDto<List<BranchStockBarChartDto>> getBranchStockBarChart(int year, int month) {
-        List<BranchStockBarChartProjection> projections = stocksStatisticsRepository.findBranchStockSummary(year, month);
-        List<BranchStockBarChartDto> result = new ArrayList<>();
+        List<BranchStockBarChartDto> rows = stocksStatisticsMapper.findBranchStockSummaryWithTotal(year, month);
 
-        long totalIn = 0L;
-        long totalOut = 0L;
-        long totalLoss = 0L;
-
-        for (BranchStockBarChartProjection p : projections) {
-            long in = p.getInAmount() != null ? p.getInAmount() : 0L;
-            long out = p.getOutAmount() != null ? p.getOutAmount() : 0L;
-            long loss = p.getLossAmount() != null ? p.getLossAmount() : 0L;
-
-            result.add(BranchStockBarChartDto.builder()
-                .branchName(p.getBranchName())
-                .inAmount(in)
-                .outAmount(out)
-                .lossAmount(loss)
-                .build()
-            );
-
-            totalIn += in;
-            totalOut += out;
-            totalLoss += loss;
-        }
-
-        result.add(BranchStockBarChartDto.builder()
-            .branchName("전체 합계")
-            .inAmount(totalIn)
-            .outAmount(totalOut)
-            .lossAmount(totalLoss)
-            .build()
-        );
+        List<BranchStockBarChartDto> result = rows.stream()
+            .map(r -> BranchStockBarChartDto.builder()
+                .branchName(r.getBranchName())
+                .inAmount(r.getInAmount() == null ? 0L : r.getInAmount())
+                .outAmount(r.getOutAmount() == null ? 0L : r.getOutAmount())
+                .lossAmount(r.getLossAmount() == null ? 0L : r.getLossAmount())
+                .build())
+            .toList();
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, result);
     }
 
     @Override
     public ResponseDto<List<TimeStockChartResponseDto>> getTimeStockStatistics(Long year) {
-        List<TimeStockChartProjection> projections = stocksStatisticsRepository.findTimeStockStatisticsByYear(year);
-
         int currentMonth = (LocalDate.now().getYear() == year ? LocalDate.now().getMonthValue() : 12);
+        List<TimeStockChartResponseDto> rows = stocksStatisticsMapper.findTimeStockStatisticsZeroFilled(year.intValue(), currentMonth);
 
-        List<Branch> allBranches = branchRepository.findAll();
-
-        List<TimeStockChartResponseDto> result = new ArrayList<>();
-
-        for (Branch branch : allBranches) {
-            for (long month = 1; month <= currentMonth; month++) {
-                long finalMonth = month;
-                TimeStockChartProjection projection = projections.stream()
-                    .filter(timeStockChartProjection -> timeStockChartProjection.getBranchName().equals(branch.getBranchName()) && timeStockChartProjection.getMonth().equals(finalMonth))
-                    .findFirst()
-                    .orElse(null);
-
-                if (projection != null && projection.getInAmount() != null && projection.getLossAmount() != null) {
-                    result.add(TimeStockChartResponseDto.builder()
-                        .branchName(branch.getBranchName())
-                        .month(month)
-                        .inAmount(projection.getInAmount())
-                        .lossAmount(projection.getLossAmount())
-                        .build());
-                }
-            }
-        }
+        List<TimeStockChartResponseDto> result = rows.stream()
+            .map(r -> TimeStockChartResponseDto.builder()
+                .branchName(r.getBranchName())
+                .month(r.getMonth())
+                .inAmount(r.getInAmount() == null ? 0L : r.getInAmount())
+                .lossAmount(r.getLossAmount() == null ? 0L : r.getLossAmount())
+                .build())
+            .toList();
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, result);
     }
 
     @Override
-    public ResponseDto<List<ZeroStockProjection>> getZeroStockBooks() {
-        List<ZeroStockProjection> projections = stocksStatisticsRepository.findZeroStockStatics();
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, projections);
+    public ResponseDto<List<ZeroStockResponseDto>> getZeroStockBooks() {
+        List<ZeroStockResponseDto> rows = stocksStatisticsMapper.findZeroStockStatistics();
+        List<ZeroStockResponseDto> result = rows.stream()
+            .map(r -> ZeroStockResponseDto.builder()
+                .branchName(r.getBranchName())
+                .zeroStockCount(r.getZeroStockCount())
+                .build())
+            .toList();
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, result);
     }
 
     @Override
     public ResponseDto<List<CategoryStockResponseDto>> getCategoryStocks(String branchName) {
-        List<CategoryStockProjection> projections = stocksStatisticsRepository.findCategoryStockByBranch(branchName);
+        List<CategoryStockResponseDto> rows = stocksStatisticsMapper.findCategoryTop9EtcByBranchName(branchName);
 
-        List<CategoryStockResponseDto> top10 = new ArrayList<>();
-        long etcSum = 0L;
+        List<CategoryStockResponseDto> result = rows.stream()
+            .map(r -> new CategoryStockResponseDto(r.getCategoryName(), r.getQuantity()))
+            .toList();
 
-        for (int i = 0; i < projections.size(); i++) {
-            CategoryStockProjection p = projections.get(i);
-            if (i < 9) {
-                top10.add(new CategoryStockResponseDto(p.getCategoryName(), p.getTotalAmount()));
-            } else {
-                etcSum += p.getTotalAmount();
-            }
-        }
-
-        if (etcSum > 0) {
-            top10.add(new CategoryStockResponseDto("기타", etcSum));
-        }
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, top10);
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, result);
     }
 }

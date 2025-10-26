@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bookhub_back.mapper.StocksStatisticsMapper">
+
+    <select id="findBranchStockSummaryWithTotal"
+            resultType="BranchStockBarChartDto">
+        <![CDATA[
+        SELECT
+            COALESCE(b.branch_name, '전체 합계') AS branchName,
+            COALESCE(SUM(CASE WHEN s.action_type = 'IN'   THEN s.amount END), 0) AS inAmount,
+            COALESCE(SUM(CASE WHEN s.action_type = 'OUT'  THEN s.amount END), 0) AS outAmount,
+            COALESCE(SUM(CASE WHEN s.action_type = 'LOSS' THEN s.amount END), 0) AS lossAmount
+        FROM stock_logs s
+                 JOIN branches b ON b.branch_id = s.branch_id
+        WHERE YEAR(s.action_date)  = #{year}
+          AND MONTH(s.action_date) = #{month}
+        GROUP BY b.branch_name WITH ROLLUP
+        ORDER BY CASE WHEN b.branch_name IS NULL THEN 1 ELSE 0 END, b.branch_name
+        ]]>
+    </select>
+
+    <select id="findTimeStockStatisticsZeroFilled"
+            resultType="TimeStockChartResponseDto">
+        <![CDATA[
+        WITH RECURSIVE months AS (
+            SELECT 1 AS month
+        UNION ALL
+        SELECT month + 1 FROM months WHERE month < #{currentMonth}
+            )
+        SELECT
+            b.branch_name AS branchName,
+            m.month       AS month,
+            COALESCE(SUM(CASE WHEN s.action_type = 'IN'   THEN s.amount END), 0) AS inAmount,
+            COALESCE(SUM(CASE WHEN s.action_type = 'LOSS' THEN s.amount END), 0) AS lossAmount
+        FROM branches b
+            CROSS JOIN months m
+            LEFT JOIN stock_logs s
+        ON s.branch_id = b.branch_id
+            AND YEAR(s.action_date)  = #{year}
+            AND MONTH(s.action_date) = m.month
+        GROUP BY b.branch_name, m.month
+        ORDER BY b.branch_name, m.month
+        ]]>
+    </select>
+
+    <select id="findZeroStockStatistics"
+            resultType="ZeroStockResponseDto">
+        <![CDATA[
+        SELECT
+            b.branch_name AS branchName,
+            COUNT(*)      AS zeroStockCount
+        FROM stocks st
+                 JOIN branches b ON b.branch_id = st.branch_id
+        WHERE st.book_amount = 0
+        GROUP BY b.branch_name
+        ORDER BY b.branch_name
+        ]]>
+    </select>
+
+    <select id="findCategoryTop9EtcByBranchName"
+            resultType="CategoryStockResponseDto">
+        <![CDATA[
+        WITH ranked AS (
+            SELECT
+                c.category_name AS categoryName,
+                SUM(st.book_amount) AS quantity,
+                ROW_NUMBER() OVER (ORDER BY SUM(st.book_amount) DESC) AS rn
+            FROM stocks st
+                     JOIN branches   b  ON b.branch_id = st.branch_id
+                     JOIN books     bk ON bk.book_isbn = st.book_isbn
+                     JOIN book_categories c  ON c.category_id   = bk.category_id
+            WHERE b.branch_name = #{branchName}
+            GROUP BY c.category_name
+        )
+        SELECT categoryName, quantity
+        FROM ranked
+        WHERE rn <= 9
+        UNION ALL
+        SELECT '기타' AS categoryName, COALESCE(SUM(quantity), 0)
+        FROM ranked
+        WHERE rn > 9
+        ]]>
+    </select>
+
+</mapper>

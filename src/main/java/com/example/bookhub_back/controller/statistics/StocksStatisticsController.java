@@ -2,10 +2,10 @@ package com.example.bookhub_back.controller.statistics;
 
 import com.example.bookhub_back.common.constants.ApiMappingPattern;
 import com.example.bookhub_back.dto.ResponseDto;
-import com.example.bookhub_back.dto.statistics.projection.ZeroStockProjection;
 import com.example.bookhub_back.dto.statistics.response.stocks.BranchStockBarChartDto;
 import com.example.bookhub_back.dto.statistics.response.stocks.CategoryStockResponseDto;
 import com.example.bookhub_back.dto.statistics.response.stocks.TimeStockChartResponseDto;
+import com.example.bookhub_back.dto.statistics.response.stocks.ZeroStockResponseDto;
 import com.example.bookhub_back.service.statistics.StocksStatisticsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,8 +47,8 @@ public class StocksStatisticsController {
 
     @Operation(summary = "지점별 재고가 0인 재고 통계 조회", description = "지점별 재고가 0인 재고 통게를 조회합니다.")
     @GetMapping("/zero")
-    public ResponseEntity<ResponseDto<List<ZeroStockProjection>>> getZeroStockBooks() {
-        ResponseDto<List<ZeroStockProjection>> revenue = stocksStatisticsService.getZeroStockBooks();
+    public ResponseEntity<ResponseDto<List<ZeroStockResponseDto>>> getZeroStockBooks() {
+        ResponseDto<List<ZeroStockResponseDto>> revenue = stocksStatisticsService.getZeroStockBooks();
         return ResponseEntity.status(HttpStatus.OK).body(revenue);
     }
 
